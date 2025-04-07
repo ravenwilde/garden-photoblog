@@ -23,7 +23,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" enableSystem defaultTheme="system">
           <AuthProvider>
             <Navbar />
-            <main className="min-h-screen bg-white dark:bg-gray-900">
+            <main className="pt-16 min-h-screen bg-white dark:bg-gray-900">
               {children}
             </main>
           </AuthProvider>

@@ -17,7 +17,7 @@ export default function NewPost() {
     if (!authLoading) {
       if (!isAdmin) {
         timeoutId = setTimeout(() => {
-          router.replace('/auth/sign-in');
+          router.replace('/white-rabbit');
         }, 100);
       }
     }
