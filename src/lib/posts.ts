@@ -10,10 +10,12 @@ export async function getAllPosts(): Promise<Post[]> {
       description,
       notes,
       date,
+      created_at,
+      updated_at,
       images (id, url, alt, width, height),
       tags (name)
     `)
-    .order('date', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching posts:', error);
