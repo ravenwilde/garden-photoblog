@@ -1,13 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import PostForm from '@/components/PostForm';
 import type { Post } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function NewPost() {
   const router = useRouter();
+  const { user, loading: authLoading, isAdmin } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (!authLoading) {
+      if (!isAdmin) {
+        timeoutId = setTimeout(() => {
+          router.replace('/auth/sign-in');
+        }, 100);
+      }
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [authLoading, isAdmin, router]);
+
+  // Don't render anything while checking auth
+  if (authLoading || !isAdmin) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500" />
+      </div>
+    );
+  }
 
   const handleSubmit = async (post: Omit<Post, 'id'>) => {
     setIsSubmitting(true);
@@ -37,6 +66,15 @@ export default function NewPost() {
       setIsSubmitting(false);
     }
   };
+
+  // Don't render anything while checking auth
+  if (authLoading || !isAdmin) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
