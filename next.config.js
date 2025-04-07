@@ -9,8 +9,8 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '*.objects-us-east-1.dream.io',
-        pathname: '/**',
+        hostname: 'garden-blog.s3.us-east-005.dream.io',
+        pathname: '/images/**',
       },
     ],
   },

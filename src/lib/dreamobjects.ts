@@ -56,6 +56,52 @@ function getSignatureKey(key: string, dateStamp: string, regionName: string, ser
   return kSigning;
 }
 
+export function getSignedImageUrl(imageKey: string, expiresIn: number = 3600): string {
+  const timestamp = new Date();
+  const dateStamp = timestamp.toISOString().split('T')[0].replace(/-/g, '');
+  const amzDate = dateStamp + 'T' + timestamp.toISOString().split('T')[1].replace(/:/g, '').split('.')[0] + 'Z';
+
+  const credential = `${ACCESS_KEY}/${dateStamp}/${REGION}/${SERVICE}/aws4_request`;
+  
+  const queryParams = new URLSearchParams({
+    'X-Amz-Algorithm': 'AWS4-HMAC-SHA256',
+    'X-Amz-Credential': credential,
+    'X-Amz-Date': amzDate,
+    'X-Amz-Expires': expiresIn.toString(),
+    'X-Amz-SignedHeaders': 'host'
+  });
+
+  const canonicalUri = `/${imageKey}`;
+  const canonicalQueryString = queryParams.toString();
+  const canonicalHeaders = `host:${BUCKET_NAME}.s3.${REGION}.dream.io\n`;
+  const signedHeaders = 'host';
+
+  const canonicalRequest = [
+    'GET',
+    canonicalUri,
+    canonicalQueryString,
+    canonicalHeaders,
+    signedHeaders,
+    'UNSIGNED-PAYLOAD'
+  ].join('\n');
+
+  const stringToSign = [
+    'AWS4-HMAC-SHA256',
+    amzDate,
+    `${dateStamp}/${REGION}/${SERVICE}/aws4_request`,
+    hash(canonicalRequest)
+  ].join('\n');
+
+  const signingKey = getSignatureKey(SECRET_KEY, dateStamp, REGION, SERVICE);
+  const signature = crypto.createHmac('sha256', signingKey)
+    .update(stringToSign)
+    .digest('hex');
+
+  queryParams.append('X-Amz-Signature', signature);
+  
+  return `https://${BUCKET_NAME}.s3.${REGION}.dream.io${canonicalUri}?${queryParams.toString()}`;
+}
+
 export async function uploadImage(file: File): Promise<UploadedImage> {
   try {
     const buffer = await file.arrayBuffer();
