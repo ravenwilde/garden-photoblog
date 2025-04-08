@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Post } from '@/types';
-import { format } from 'date-fns';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { format, parseISO } from 'date-fns';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { deletePostAction } from '@/app/actions';
 import ImageModal from './ImageModal';
+import EditPostForm from './EditPostForm';
 
 interface FeaturedPostProps {
   post: Post;
@@ -17,6 +18,7 @@ interface FeaturedPostProps {
 export default function FeaturedPost({ post }: FeaturedPostProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { isAdmin } = useAuth();
   const router = useRouter();
   return (
@@ -46,13 +48,14 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
         <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
           <div className="max-w-3xl">
             <time dateTime={post.date} className="block text-sm text-gray-300 mb-4">
-              {format(new Date(post.date), 'MMMM d, yyyy')}
+              {format(parseISO(post.date), 'MMMM d, yyyy')}
             </time>
             <div className="flex items-center gap-2 mb-4">
               <h1 className="text-4xl font-bold group-hover:text-green-400 transition-colors">
                 {post.title}
               </h1>
               {isAdmin && (
+                <div className="flex items-center gap-2">
                 <button
                   onClick={async (e) => {
                     e.stopPropagation();
@@ -79,6 +82,17 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
                 >
                   <TrashIcon className="h-6 w-6" />
                 </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsEditing(true);
+                  }}
+                  className="p-1 text-gray-300 hover:text-indigo-400 transition-colors"
+                  title="Edit post"
+                >
+                  <PencilIcon className="h-6 w-6" />
+                </button>
+                </div>
               )}
             </div>
             <p className="text-lg text-gray-200 mb-4">
@@ -112,6 +126,24 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      {isEditing && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Edit Post</h2>
+              <EditPostForm
+                post={post}
+                onClose={() => setIsEditing(false)}
+                onCancel={() => setIsEditing(false)}
+                onSuccess={() => {
+                  setIsEditing(false);
+                  router.refresh();
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

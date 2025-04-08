@@ -28,11 +28,13 @@ export default function TagsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
         Manage Tags
       </h1>
-      <TagManager className="max-w-2xl" />
+      <div className="w-full max-w-2xl">
+        <TagManager />
+      </div>
     </div>
   );
 }

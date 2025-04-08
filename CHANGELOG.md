@@ -4,6 +4,16 @@ All notable changes to the Garden Photo Blog project will be documented in this 
 
 ## Latest Changes
 
+### Post Editing and Sorting Enhancement (2025-04-08)
+- Added edit button to posts for admin users
+- Created EditPostForm component with form validation
+- Implemented secure PUT endpoint for updating posts
+- Added modal dialog for editing post content
+- Maintained dark mode support in edit form
+- Fixed date handling to ensure consistent display across components
+- Improved post sorting to dynamically update when dates are modified
+- Enhanced FeaturedPost to reflect date changes immediately
+
 ### Tag Management System (2025-04-08)
 - Added tag management UI with create, update, and delete functionality
 - Implemented secure tag management API routes with admin protection
