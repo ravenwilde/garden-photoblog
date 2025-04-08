@@ -37,7 +37,7 @@ export default function ImageModal({ images, isOpen, onClose, initialImageIndex 
       preloadImage(images[nextIndex].url);
       preloadImage(images[prevIndex].url);
     }
-  }, [isOpen, currentIndex, adjacentIndices, preloadImage]);
+  }, [isOpen, currentIndex, adjacentIndices, preloadImage, images]);
 
   // Reset loading state when current image changes
   useEffect(() => {
