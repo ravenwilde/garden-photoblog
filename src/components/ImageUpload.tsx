@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import ImagePreview from './ImagePreview';
 import type { Image as ImageType } from '@/types';
@@ -127,6 +127,12 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
     setUploadingFiles(prev => prev.filter(f => f.file !== fileToRemove));
   }, []);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="w-full space-y-4">
       {/* Upload area */}
@@ -141,6 +147,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
         }`}
       >
         <input
+          ref={fileInputRef}
           type="file"
           className="hidden"
           accept="image/*"
@@ -154,9 +161,13 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
           <div className="text-sm text-center">
             <span className="text-gray-600 dark:text-gray-400">
               Drag and drop your images here, or{' '}
-              <span className="text-green-600 dark:text-green-400 hover:underline cursor-pointer">
+              <button
+                type="button"
+                onClick={handleBrowseClick}
+                className="text-green-600 dark:text-green-400 hover:underline focus:outline-none"
+              >
                 browse
-              </span>
+              </button>
             </span>
             <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Maximum file size: 10MB
