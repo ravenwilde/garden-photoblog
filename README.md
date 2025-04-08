@@ -17,6 +17,13 @@ A beautiful and modern photo blog application built with Next.js, Tailwind CSS, 
 
 Latest changes at the top:
 
+### Image Loading and Modal Improvements
+- Added loading spinner and overlay for image modal
+- Implemented image preloading for smoother gallery navigation
+- Enhanced modal accessibility with larger hit areas and hover effects
+- Optimized image loading with responsive sizes and blur placeholders
+- Fixed sign-in page redirect for authenticated users
+
 ### Image Upload and Auth Improvements
 - Fixed image upload component's browse functionality
 - Added proper loading states to auth flow
