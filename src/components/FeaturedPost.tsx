@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Post } from '@/lib/types';
+import { Post } from '@/types';
 import { format } from 'date-fns';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';

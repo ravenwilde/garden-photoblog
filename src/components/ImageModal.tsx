@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-interface ImageType {
-  id: string;
-  url: string;
-  alt?: string;
-  width?: number;
-  height?: number;
-}
+import { Image as ImageType } from '@/types';
 
 interface ImageModalProps {
   images: ImageType[];
