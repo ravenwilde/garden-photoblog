@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import PostForm from '@/components/PostForm';
-import type { Post } from '@/types';
+import type { NewPost } from '@/types';
 import { useAuth } from '@/lib/auth';
 
 export default function NewPost() {
@@ -38,7 +38,7 @@ export default function NewPost() {
     );
   }
 
-  const handleSubmit = async (post: Omit<Post, 'id'>) => {
+  const handleSubmit = async (post: NewPost) => {
     setIsSubmitting(true);
     try {
       const response = await fetch('/api/posts', {

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createPost, getAllPosts, deletePost, updatePost } from '@/lib/posts';
-import type { Post } from '@/types';
+import type { Post, NewPost } from '@/types';
 
 export async function GET() {
   try {
@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const post: Omit<Post, 'id'> = await request.json();
+    const post: NewPost = await request.json();
     
     // Validate required fields
     if (!post.title || !post.description || !post.date || !post.images?.length) {
