@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import ImageUpload from './ImageUpload';
-import type { Post, Image as ImageType } from '@/types';
+import type { NewPost, Image as ImageType } from '@/types';
 
 interface PostFormProps {
-  onSubmit: (post: Omit<Post, 'id'>) => void;
+  onSubmit: (post: NewPost) => void;
   isSubmitting?: boolean;
 }
 
@@ -105,9 +105,9 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
               <div key={index} className="relative group">
                 <Image
                   src={image.url}
-                  alt={image.alt}
-                  width={image.width}
-                  height={image.height}
+                  alt={image.alt || 'Garden photo'}
+                  width={image.width || 800}
+                  height={image.height || 600}
                   className="w-full h-32 object-cover rounded-lg"
                 />
                 <button

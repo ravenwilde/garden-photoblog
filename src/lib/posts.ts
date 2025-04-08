@@ -1,4 +1,4 @@
-import { Post } from '@/types';
+import { Post, NewPost, Image } from '@/types';
 import { supabase } from './supabase';
 
 export async function getAllPosts(): Promise<Post[]> {
@@ -22,14 +22,23 @@ export async function getAllPosts(): Promise<Post[]> {
     throw error;
   }
 
+  // Get all existing tags
+  const { data: existingTags } = await supabase
+    .from('tags')
+    .select('id, name');
+
   return posts.map(post => ({
     ...post,
     images: post.images || [],
-    tags: (post.tags || []).map(tag => tag.name)
+    tags: (post.tags || []).map(tag => tag.name),
+    // Create missing tags
+    missingTags: (post.tags || []).filter(
+      name => !existingTags?.some(tag => tag.name === name)
+    )
   }));
 }
 
-export async function createPost(post: Omit<Post, 'id'>): Promise<Post> {
+export async function createPost(post: NewPost): Promise<Post> {
   const { data: newPost, error: postError } = await supabase
     .from('posts')
     .insert({
@@ -50,12 +59,13 @@ export async function createPost(post: Omit<Post, 'id'>): Promise<Post> {
   if (post.images.length > 0) {
     const { error: imageError } = await supabase
       .from('images')
-      .insert(
-        post.images.map(image => ({
-          post_id: newPost.id,
-          ...image
-        }))
-      );
+      .insert(post.images.map((image: Image) => ({
+        post_id: newPost.id,
+        url: image.url,
+        alt: image.alt || '',
+        width: image.width,
+        height: image.height
+      })));
 
     if (imageError) {
       console.error('Error inserting images:', imageError);
@@ -63,8 +73,8 @@ export async function createPost(post: Omit<Post, 'id'>): Promise<Post> {
     }
   }
 
-  // Insert tags
-  if (post.tags.length > 0) {
+  // Insert tags if any
+  if (post.tags && post.tags.length > 0) {
     // First, ensure all tags exist
     const { error: tagError } = await supabase
       .from('tags')
@@ -79,21 +89,22 @@ export async function createPost(post: Omit<Post, 'id'>): Promise<Post> {
     }
 
     // Then, get the tag IDs
-    const { data: tags, error: tagSelectError } = await supabase
+    // Get all existing tags
+    const { data: existingTags } = await supabase
       .from('tags')
       .select('id, name')
-      .in('name', post.tags);
+      .in('name', post.tags || []);
 
-    if (tagSelectError || !tags) {
-      console.error('Error selecting tags:', tagSelectError);
-      throw tagSelectError;
+    if (!existingTags) {
+      console.error('Error selecting tags:');
+      throw new Error('Error selecting tags');
     }
 
-    // Finally, create the post-tag relationships
+    // Create the post-tag relationships
     const { error: postTagError } = await supabase
       .from('post_tags')
       .insert(
-        tags.map(tag => ({
+        existingTags.map(tag => ({
           post_id: newPost.id,
           tag_id: tag.id
         }))
@@ -105,10 +116,32 @@ export async function createPost(post: Omit<Post, 'id'>): Promise<Post> {
     }
   }
 
-  // Return the complete post
+  // Fetch the complete post with all fields
+  const { data: completePost, error: fetchError } = await supabase
+    .from('posts')
+    .select(`
+      id,
+      title,
+      description,
+      notes,
+      date,
+      created_at,
+      updated_at,
+      images (id, url, alt, width, height),
+      tags (name)
+    `)
+    .eq('id', newPost.id)
+    .single();
+
+  if (fetchError || !completePost) {
+    console.error('Error fetching complete post:', fetchError);
+    throw fetchError;
+  }
+
   return {
-    id: newPost.id,
-    ...post
+    ...completePost,
+    images: completePost.images || [],
+    tags: (completePost.tags || []).map(tag => tag.name)
   };
 }
 
