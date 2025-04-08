@@ -4,17 +4,17 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import PostForm from '@/components/PostForm';
 import type { Post } from '@/types';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/lib/auth';
 
 export default function NewPost() {
   const router = useRouter();
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const { isAdmin, loading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
-    if (!authLoading) {
+    if (!isAdmin && !loading) {
       if (!isAdmin) {
         timeoutId = setTimeout(() => {
           router.replace('/white-rabbit');
@@ -27,10 +27,10 @@ export default function NewPost() {
         clearTimeout(timeoutId);
       }
     };
-  }, [authLoading, isAdmin, router]);
+  }, [loading, isAdmin, router]);
 
   // Don't render anything while checking auth
-  if (authLoading || !isAdmin) {
+  if (loading || !isAdmin) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500" />
@@ -68,7 +68,7 @@ export default function NewPost() {
   };
 
   // Don't render anything while checking auth
-  if (authLoading || !isAdmin) {
+  if (loading || !isAdmin) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500" />

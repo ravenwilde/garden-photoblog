@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import ImageModal from './ImageModal';
+import { useAuth } from '@/lib/auth';
+import { deletePostAction } from '@/app/actions';
 import type { Post } from '@/types';
 
 interface PostCardProps {
@@ -12,6 +16,9 @@ interface PostCardProps {
 
 export default function PostCard({ post }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { isAdmin } = useAuth();
+  const router = useRouter();
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg">
@@ -37,11 +44,40 @@ export default function PostCard({ post }: PostCardProps) {
         )}
       </div>
       
-      <div className="p-4">
+      <div className="p-4 relative">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            {post.title}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              {post.title}
+            </h2>
+            {isAdmin && (
+              <button
+                onClick={async () => {
+                  if (window.confirm('Are you sure you want to delete this post?')) {
+                    setIsDeleting(true);
+                    try {
+                      const result = await deletePostAction(post.id);
+                      if (result.success) {
+                        router.refresh();
+                      } else {
+                        alert('Failed to delete post');
+                      }
+                    } catch (error) {
+                      console.error('Error deleting post:', error);
+                      alert('Failed to delete post');
+                    } finally {
+                      setIsDeleting(false);
+                    }
+                  }
+                }}
+                disabled={isDeleting}
+                className="p-1 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
+                title="Delete post"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            )}
+          </div>
           <time className="text-sm text-gray-500 dark:text-gray-400">
             {format(new Date(post.date), 'MMM d, yyyy')}
           </time>

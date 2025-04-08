@@ -1,13 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/lib/auth';
 import { useTheme } from 'next-themes';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 
 export default function Navbar() {
-  const { user, signOut, isAdmin, loading } = useAuth();
+  const { isAdmin, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -15,7 +15,7 @@ export default function Navbar() {
     setMounted(true);
   }, []);
 
-  if (!user || loading) return null;
+
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-800/95 shadow-sm backdrop-blur-sm transition-all duration-300 ease-in-out">

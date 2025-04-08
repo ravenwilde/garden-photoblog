@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
@@ -19,12 +19,8 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      const { error: signInError } = await signIn(email, password);
-      if (signInError) {
-        setError(signInError.message);
-      } else {
-        router.push('/');
-      }
+      await signIn(email, password);
+      router.push('/');
     } catch (err) {
       setError('An unexpected error occurred');
     } finally {

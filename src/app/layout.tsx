@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
+import './globals.css';
+import { AuthProvider } from '@/lib/auth';
 import Navbar from "@/components/Navbar";
 
 const geist = Geist({ subsets: ["latin"] });
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={geist.className}>
-        <ThemeProvider attribute="class" enableSystem defaultTheme="system">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <Navbar />
             <main className="pt-16 min-h-screen bg-white dark:bg-gray-900">
