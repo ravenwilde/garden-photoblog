@@ -140,6 +140,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        data-testid="dropzone"
         className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
           isDragging
             ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
@@ -150,6 +151,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
           ref={fileInputRef}
           type="file"
           className="hidden"
+          data-testid="file-input"
           accept="image/*"
           multiple
           onChange={handleFileSelect}

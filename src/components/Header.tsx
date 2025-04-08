@@ -21,7 +21,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-white/75 dark:bg-gray-900/75 backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Garden Photo Blog
+          8325.garden
         </h1>
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

@@ -29,7 +29,7 @@ export default function Navbar() {
               href="/"
               className="flex items-center px-2 py-2 text-gray-900 dark:text-white hover:text-green-600 dark:hover:text-green-400 transition-colors"
             >
-              <span className="text-xl font-semibold">Garden Blog</span>
+              <span className="text-xl font-semibold">8325.garden</span>
             </Link>
           </div>
 
