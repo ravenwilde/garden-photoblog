@@ -23,23 +23,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-      setIsAdmin(session?.user?.email === adminEmail);
-      setLoading(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+        setIsAdmin(session?.user?.email === adminEmail);
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+      }
     };
 
+    // Initial check
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-      setIsAdmin(session?.user?.email === adminEmail);
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setLoading(true);
+      try {
+        if (event === 'SIGNED_OUT') {
+          setIsAdmin(false);
+        } else {
+          const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+          setIsAdmin(session?.user?.email === adminEmail);
+        }
+      } catch (error) {
+        console.error('Error handling auth change:', error);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  // Expose loading state for components to handle loading states
+  useEffect(() => {
+    if (!loading) {
+      // Force a re-render of all components using auth context when loading changes
+      window.dispatchEvent(new Event('auth-state-change'));
+    }
+  }, [loading, isAdmin]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
@@ -50,7 +78,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      setIsAdmin(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
