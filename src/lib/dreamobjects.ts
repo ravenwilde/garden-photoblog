@@ -221,8 +221,3 @@ export async function uploadImage(file: File): Promise<UploadedImage> {
     throw error;
   }
 }
-
-export async function deleteImage(key: string) {
-  // Implementation for deleting images if needed
-  // This would use the DeleteObjectCommand from AWS SDK
-}

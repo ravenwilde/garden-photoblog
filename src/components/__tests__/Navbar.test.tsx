@@ -9,9 +9,6 @@ jest.mock('@/lib/auth', () => ({
 
 describe('Navbar', () => {
   const mockSignOut = jest.fn();
-  const mockRouter = {
-    replace: jest.fn(),
-  };
 
   beforeEach(() => {
     jest.clearAllMocks();

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import ImageUpload from './ImageUpload';
 import type { Post, Image as ImageType } from '@/types';
 
@@ -102,9 +103,11 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
           <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((image, index) => (
               <div key={index} className="relative group">
-                <img
+                <Image
                   src={image.url}
                   alt={image.alt}
+                  width={image.width}
+                  height={image.height}
                   className="w-full h-32 object-cover rounded-lg"
                 />
                 <button

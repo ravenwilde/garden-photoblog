@@ -22,7 +22,8 @@ export default function SignInForm() {
       await signIn(email, password);
       router.push('/');
     } catch (err) {
-      setError('An unexpected error occurred');
+      setError(`An error occurred: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      console.error('Sign in error:', err);
     } finally {
       setIsLoading(false);
     }

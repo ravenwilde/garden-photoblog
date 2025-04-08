@@ -70,7 +70,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
         }
 
         // Update progress
-        setUploadingFiles(prev => prev.map((f, index) => 
+        setUploadingFiles(prev => prev.map(f => 
           f.file === file ? { ...f, progress: 100 } : f
         ));
 

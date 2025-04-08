@@ -12,7 +12,7 @@ interface ImagePreviewProps {
 }
 
 export default function ImagePreview({ file, onRemove, error, progress }: ImagePreviewProps) {
-  const [previewUrl, setPreviewUrl] = useState<string>(() => URL.createObjectURL(file));
+  const [previewUrl] = useState<string>(() => URL.createObjectURL(file));
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>();
   const [isLoading, setIsLoading] = useState(true);
 

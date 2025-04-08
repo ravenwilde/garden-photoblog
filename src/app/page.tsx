@@ -2,7 +2,7 @@ import Header from '@/components/Header';
 import PostCard from '@/components/PostCard';
 import FeaturedPost from '@/components/FeaturedPost';
 import { getAllPosts } from '@/lib/posts';
-import { Post } from '@/lib/types';
+
 
 export const revalidate = 0; // Disable cache for now
 
