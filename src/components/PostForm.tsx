@@ -81,13 +81,13 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
 
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Notes (optional)
+          Notes
         </label>
         <textarea
           id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          rows={2}
+          rows={10}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
         />
       </div>
