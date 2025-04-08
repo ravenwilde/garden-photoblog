@@ -70,18 +70,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [loading, isAdmin]);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     if (error) throw error;
+
+    // Set auth cookie
+    await fetch('/api/auth/set-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ session: data.session }),
+    });
   };
 
   const signOut = async () => {
     setLoading(true);
     try {
+      // Clear client-side session
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+
+      // Clear server-side session
+      await fetch('/api/auth/clear-session', {
+        method: 'POST',
+      });
+
       setIsAdmin(false);
     } finally {
       setLoading(false);
