@@ -9,11 +9,8 @@ export const revalidate = 0; // Disable cache for now
 export default async function Home() {
   const allPosts = await getAllPosts();
   
-  // Posts are already sorted by created_at from the database query
-  const sortedPosts = allPosts;
-
   // Separate featured post (newest) from the rest
-  const [featuredPost, ...remainingPosts] = sortedPosts;
+  const [featuredPost, ...remainingPosts] = allPosts;
 
   return (
     <div className="min-h-screen">

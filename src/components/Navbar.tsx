@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { useTheme } from 'next-themes';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
@@ -11,7 +10,6 @@ export default function Navbar() {
   const { isAdmin, signOut, loading } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -61,7 +59,6 @@ export default function Navbar() {
                 onClick={async () => {
                   try {
                     await signOut();
-                    router.replace('/');
                   } catch (error) {
                     console.error('Error signing out:', error);
                   }
