@@ -30,7 +30,7 @@ export default function PostCard({ post }: PostCardProps) {
           >
             <Image
               src={post.images[0].url}
-              alt={post.images[0].alt}
+              alt={post.images[0].alt || 'Garden photo'}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -94,7 +94,7 @@ export default function PostCard({ post }: PostCardProps) {
           </div>
         )}
         
-        {post.tags.length > 0 && (
+        {post.tags && post.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <span
