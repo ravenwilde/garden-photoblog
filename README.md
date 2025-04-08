@@ -13,41 +13,9 @@ A beautiful and modern photo blog application built with Next.js, Tailwind CSS, 
 - 🏷️ Tag support for better organization
 - 🎯 Drag and drop image uploads
 
-## Changelog
+## Latest Updates
 
-Latest changes at the top:
-
-### Image Loading and Modal Improvements
-- Added loading spinner and overlay for image modal
-- Implemented image preloading for smoother gallery navigation
-- Enhanced modal accessibility with larger hit areas and hover effects
-- Optimized image loading with responsive sizes and blur placeholders
-- Fixed sign-in page redirect for authenticated users
-
-### Image Upload and Auth Improvements
-- Fixed image upload component's browse functionality
-- Added proper loading states to auth flow
-- Improved sign out behavior with immediate UI updates
-- Fixed React hooks ordering in Navbar component
-
-### Post Management and UI Enhancements
-- Added post deletion functionality with confirmation dialogs
-- Replaced Link with modal for featured posts
-- Added admin delete functionality for featured posts
-- Increased notes textarea height and improved form UI
-
-### Featured Posts and Authentication
-- Added featured post component with sorting by timestamp
-- Reorganized auth routes for better security
-- Enhanced sign-in UI with dark mode support
-- Added image preview with drag-and-drop support
-
-### Initial Features
-- Added authentication with Supabase
-- Protected admin routes
-- Migrated to Supabase with DreamObjects image hosting
-- Set up basic client blog application
-- Initial project setup with Next.js 14
+See our [CHANGELOG](CHANGELOG.md) for a detailed history of changes.
 
 ## Getting Started
 
