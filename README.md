@@ -52,6 +52,59 @@ cd garden-photoblog
 npm install
 ```
 
+2. Set up your environment variables by copying the example file:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Update the environment variables in `.env.local` with your credentials:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_ADMIN_EMAIL=your_admin_email
+NEXT_PUBLIC_S3_ENDPOINT=your_s3_endpoint
+NEXT_PUBLIC_S3_BUCKET=your_s3_bucket
+NEXT_PUBLIC_S3_ACCESS_KEY_ID=your_s3_access_key_id
+NEXT_PUBLIC_S3_SECRET_ACCESS_KEY=your_s3_secret_access_key
+```
+
+4. Run the development server:
+
+```bash
+npm run dev
+```
+
+## Deployment
+
+This project is configured for deployment on Vercel. Follow these steps to deploy:
+
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+
+2. Import your repository on [Vercel](https://vercel.com)
+
+3. Configure the following environment variables in your Vercel project settings:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `NEXT_PUBLIC_ADMIN_EMAIL`
+   - `NEXT_PUBLIC_S3_ENDPOINT`
+   - `NEXT_PUBLIC_S3_BUCKET`
+   - `NEXT_PUBLIC_S3_ACCESS_KEY_ID`
+   - `NEXT_PUBLIC_S3_SECRET_ACCESS_KEY`
+
+4. Deploy! Vercel will automatically build and deploy your site.
+
+### Custom Domain
+
+To use a custom domain:
+
+1. Go to your project settings in Vercel
+2. Navigate to the 'Domains' section
+3. Add your domain and follow the DNS configuration instructions
+npm install
+```
+
 2. Set up your environment variables in `.env.local`:
 
 ```env
