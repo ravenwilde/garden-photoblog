@@ -1,17 +1,4 @@
 {
-  "buildCommand": "next build",
-  "devCommand": "next dev",
-  "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": ".next",
-  "regions": ["iad1"],
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@next_public_supabase_url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key",
-    "NEXT_PUBLIC_ADMIN_EMAIL": "@next_public_admin_email",
-    "NEXT_PUBLIC_S3_ENDPOINT": "@next_public_s3_endpoint",
-    "NEXT_PUBLIC_S3_BUCKET": "@next_public_s3_bucket",
-    "NEXT_PUBLIC_S3_ACCESS_KEY_ID": "@next_public_s3_access_key_id",
-    "NEXT_PUBLIC_S3_SECRET_ACCESS_KEY": "@next_public_s3_secret_access_key"
-  }
+  "buildCommand": "next build"
 }
