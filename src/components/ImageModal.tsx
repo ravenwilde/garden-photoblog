@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { Image as ImageType } from '@/types';
 
@@ -14,22 +14,29 @@ interface ImageModalProps {
 export default function ImageModal({ images, isOpen, onClose, initialImageIndex = 0 }: ImageModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialImageIndex);
 
-  // Preload adjacent images
+  // Memoize the adjacent indices calculation
+  const adjacentIndices = useMemo(() => {
+    if (!images.length) return { nextIndex: 0, prevIndex: 0 };
+    return {
+      nextIndex: currentIndex === images.length - 1 ? 0 : currentIndex + 1,
+      prevIndex: currentIndex === 0 ? images.length - 1 : currentIndex - 1
+    };
+  }, [currentIndex, images.length]);
+
+  // Memoize the preload function
+  const preloadImage = useCallback((url: string) => {
+    const img = new window.Image();
+    img.src = url;
+  }, []);
+
+  // Preload adjacent images when modal is open or current index changes
   useEffect(() => {
     if (isOpen && images.length > 1) {
-      const nextIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
-      const prevIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
-      
-      // Preload next and previous images
-      const preloadImage = (url: string) => {
-        const img = new window.Image();
-        img.src = url;
-      };
-      
+      const { nextIndex, prevIndex } = adjacentIndices;
       preloadImage(images[nextIndex].url);
       preloadImage(images[prevIndex].url);
     }
-  }, [isOpen, currentIndex, images]);
+  }, [isOpen, currentIndex, adjacentIndices, preloadImage]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
