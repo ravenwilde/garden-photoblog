@@ -14,6 +14,23 @@ interface ImageModalProps {
 export default function ImageModal({ images, isOpen, onClose, initialImageIndex = 0 }: ImageModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialImageIndex);
 
+  // Preload adjacent images
+  useEffect(() => {
+    if (isOpen && images.length > 1) {
+      const nextIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+      const prevIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+      
+      // Preload next and previous images
+      const preloadImage = (url: string) => {
+        const img = new window.Image();
+        img.src = url;
+      };
+      
+      preloadImage(images[nextIndex].url);
+      preloadImage(images[prevIndex].url);
+    }
+  }, [isOpen, currentIndex, images]);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -86,8 +103,12 @@ export default function ImageModal({ images, isOpen, onClose, initialImageIndex 
             alt={currentImage.alt || 'Garden photo'}
             fill
             className="object-contain"
-            sizes="100vw"
+            sizes="(min-width: 1920px) 1920px, 100vw"
             priority
+            loading="eager"
+            quality={90}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwPTE+PDYxOjs7QUJCNjdKOzshPVFXR1NJV0JWYWNmY2RKbHRuXGf/2wBDARUXFx4aHR4eHGg7Ojtoa2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2f/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
           />
         </div>
 
