@@ -3,6 +3,8 @@ import { Post } from '@/types';
 export const samplePosts: Post[] = [
   {
     id: '1',
+    created_at: '2025-04-01T12:00:00Z',
+    updated_at: '2025-04-01T12:00:00Z',
     title: 'Spring Tulips in Bloom',
     description: 'My tulip garden is finally blooming! The colors are absolutely stunning this year.',
     notes: 'Remember to plant more bulbs in the fall for next spring.',
@@ -25,6 +27,8 @@ export const samplePosts: Post[] = [
   },
   {
     id: '2',
+    created_at: '2025-03-28T12:00:00Z',
+    updated_at: '2025-03-28T12:00:00Z',
     title: 'New Herb Garden',
     description: 'Started my herb garden with basil, thyme, and rosemary.',
     date: '2025-03-28',
