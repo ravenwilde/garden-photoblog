@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import type { Image as ImageType } from '@/types';
+interface ImageType {
+  id: string;
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+}
 
 interface ImageModalProps {
   images: ImageType[];
@@ -83,7 +89,7 @@ export default function ImageModal({ images, isOpen, onClose, initialImageIndex 
         >
           <Image
             src={currentImage.url}
-            alt={currentImage.alt}
+            alt={currentImage.alt || 'Garden photo'}
             fill
             className="object-contain"
             sizes="100vw"
