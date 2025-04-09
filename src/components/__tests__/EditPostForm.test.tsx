@@ -1,14 +1,19 @@
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import EditPostForm from '../EditPostForm';
-// import { format } from 'date-fns';
 
-// Mock next/navigation
+// Mock modules before imports
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     refresh: jest.fn(),
   }),
 }));
+
+jest.mock('@/lib/csrf-client', () => ({
+  getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
+}));
+
+// Import after mocks
+import EditPostForm from '../EditPostForm';
 
 // Mock fetch
 global.fetch = jest.fn();
@@ -83,9 +88,12 @@ describe('EditPostForm', () => {
       onClose: jest.fn(),
       onSuccess: jest.fn(),
     };
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    // Mock fetch for post update
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve({ success: true }),
+      json: () => Promise.resolve({ success: true })
     });
 
     render(<EditPostForm {...mockProps} />);
@@ -101,24 +109,24 @@ describe('EditPostForm', () => {
     fireEvent.submit(screen.getByRole('form'));
 
     await waitFor(() => {
-      const expectedBody = {
-        title: 'Updated Title',
-        description: 'Updated Description',
-        date: mockPost.date,
-        notes: mockPost.notes,
-        tags: mockPost.tags
-      };
-
-      expect(global.fetch).toHaveBeenCalledWith(`/api/posts/${mockPost.id}`, {
+      // Should be called with the CSRF token from the mock
+      expect(global.fetch).toHaveBeenCalledWith('/api/posts/123', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'x-csrf-token': 'mock-csrf-token'
         },
-        body: JSON.stringify(expectedBody)
+        body: JSON.stringify({
+          title: 'Updated Title',
+          description: 'Updated Description',
+          date: mockPost.date,
+          notes: mockPost.notes,
+          tags: mockPost.tags,
+        }),
       });
       expect(mockProps.onSuccess).toHaveBeenCalled();
       expect(mockProps.onClose).toHaveBeenCalled();
-    });
+    }, { timeout: 1000 });
   });
 
   it('handles form submission error', async () => {

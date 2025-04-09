@@ -1,5 +1,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+// Mock modules before imports
+jest.mock('@/lib/csrf-client', () => ({
+  getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
+}));
+
 import ImageUpload from '../ImageUpload';
 
 describe('ImageUpload', () => {
@@ -11,15 +17,16 @@ describe('ImageUpload', () => {
     jest.clearAllMocks();
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    
-    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+
+    // Mock fetch for image upload
+    global.fetch = jest.fn().mockResolvedValueOnce({
       ok: true,
       json: () => Promise.resolve({
         id: 'test-id',
         url: 'https://example.com/test.png',
         alt: 'test.png'
       })
-    }));
+    });
     
     // Mock URL.createObjectURL
     Object.defineProperty(global, 'URL', {
@@ -83,8 +90,19 @@ describe('ImageUpload', () => {
     });
     
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/upload', expect.any(Object));
-    });
+      expect(global.fetch).toHaveBeenCalledWith('/api/upload', {
+        method: 'POST',
+        headers: {
+          'x-csrf-token': 'mock-csrf-token'
+        },
+        body: expect.any(FormData)
+      });
+      expect(mockOnImagesUploaded).toHaveBeenCalledWith([{
+        id: 'test-id',
+        url: 'https://example.com/test.png',
+        alt: 'test.png'
+      }]);
+    }, { timeout: 1000 });
   });
 
   it('validates file type', async () => {

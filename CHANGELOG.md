@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.3] (2025-04-09)
+### Fixed
+- Updated component tests to handle CSRF token validation
+- Fixed failing tests in EditPostForm, ImageUpload, and TagManager components
+- Improved error handling tests for tag management
+
 ## [1.2.2] (2025-04-08)
 ### Fixed
 - Standardized authentication handling across all API endpoints
