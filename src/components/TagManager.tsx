@@ -13,6 +13,7 @@ export default function TagManager({ className = '' }: TagManagerProps) {
   const [editName, setEditName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [newTagValue, setNewTagValue] = useState('');
 
   useEffect(() => {
     fetchTags();
@@ -103,13 +104,57 @@ export default function TagManager({ className = '' }: TagManagerProps) {
     return <div className={className}>Loading tags...</div>;
   }
 
+  const handleNewTag = async () => {
+    const value = newTagValue.trim();
+    if (!value) return;
+
+    try {
+      const response = await fetch('/api/tags', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: value }),
+        credentials: 'include'
+      });
+
+      if (!response.ok) throw new Error('Failed to create tag');
+      await fetchTags();
+      setNewTagValue('');
+    } catch (error) {
+      setError('Failed to create tag');
+      console.error('Error creating tag:', error);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleNewTag();
+    }
+  };
+
   return (
     <div className={className}>
       {error && (
-        <div className="mb-4 p-2 text-red-700 bg-red-100 rounded">
+        <div role="alert" className="mb-4 p-2 text-red-700 bg-red-100 rounded">
           {error}
         </div>
       )}
+
+      <div className="mb-4 flex gap-2">
+        <input
+          type="text"
+          placeholder="Add a new tag"
+          value={newTagValue}
+          onChange={(e) => setNewTagValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+        />
+        <button
+          onClick={handleNewTag}
+          className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        >
+          Add tag
+        </button>
+      </div>
 
       <div className="space-y-2">
         {tags.map(tag => (

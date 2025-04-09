@@ -20,7 +20,7 @@ export async function PUT(
     const { title, description, date, notes, tags } = body;
 
     // Update post details
-    const { data: updatedPost, error: postError } = await supabase
+    const { error: postError } = await supabase
       .from('posts')
       .update({
         title,

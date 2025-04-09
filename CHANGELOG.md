@@ -4,6 +4,12 @@ All notable changes to the Garden Photo Blog project will be documented in this 
 
 ## Latest Changes
 
+### Test Fixes and Error Handling Improvements (2025-04-08)
+- Fixed EditPostForm tests to properly handle tag removal and form submission
+- Improved error handling tests with proper mock implementations
+- Enhanced TagManager error message display and accessibility
+- Fixed test synchronization issues with async operations
+
 ### Post Editing and Sorting Enhancement (2025-04-08)
 - Added edit button to posts for admin users
 - Created EditPostForm component with form validation

@@ -1,18 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { format, parseISO } from 'date-fns';
+// import { format, parseISO } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import type { Post } from '@/types';
 
 interface EditPostFormProps {
   post: Post;
   onClose: () => void;
-  onCancel?: () => void;
   onSuccess?: () => void;
 }
 
-export default function EditPostForm({ post, onClose, onCancel, onSuccess }: EditPostFormProps) {
+export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: post.title,
@@ -34,13 +33,15 @@ export default function EditPostForm({ post, onClose, onCancel, onSuccess }: Edi
     }
   };
 
-  const removeTag = (tagToRemove: string) => {
+  const removeTag = async (tagToRemove: string) => {
+    const newTags = formData.tags.filter(tag => tag !== tagToRemove);
+    await Promise.resolve(); // Ensure state update is handled asynchronously
     setFormData({
       ...formData,
-      tags: formData.tags.filter(tag => tag !== tagToRemove)
+      tags: newTags
     });
   };
-  const router = useRouter();
+  useRouter(); // Keep router initialized for future use
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +73,7 @@ export default function EditPostForm({ post, onClose, onCancel, onSuccess }: Edi
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4" role="form">
       <div>
         <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           Title
@@ -129,19 +130,20 @@ export default function EditPostForm({ post, onClose, onCancel, onSuccess }: Edi
       </div>
 
       <div>
-        <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label htmlFor="tag-input" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           Tags
         </label>
-        <input
-          type="text"
-          id="tags"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleTagKeyDown}
-          placeholder="Add tags (press Enter or comma to add)"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
-        />
-        
+        <div className="mt-1">
+          <input
+            id="tag-input"
+            type="text"
+            placeholder="Add a tag"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleTagKeyDown}
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+          />
+        </div>
         {formData.tags.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-2">
             {formData.tags.map((tag) => (
@@ -152,8 +154,9 @@ export default function EditPostForm({ post, onClose, onCancel, onSuccess }: Edi
                 {tag}
                 <button
                   type="button"
-                  onClick={() => removeTag(tag)}
+                  onClick={async () => await removeTag(tag)}
                   className="ml-1 hover:text-indigo-600 dark:hover:text-indigo-400"
+                  aria-label="remove tag"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
