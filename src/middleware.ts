@@ -7,6 +7,11 @@ import { verifyToken, getTokenFromHeaders } from './lib/csrf';
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
+  // Skip middleware for Supabase auth endpoints
+  if (req.nextUrl.pathname.startsWith('/auth/')) {
+    return res;
+  }
+
   try {
     // Create Supabase client
     const supabase = createServerClient(
@@ -41,8 +46,9 @@ export async function middleware(req: NextRequest) {
 
     // Check rate limiting and CSRF for API routes
     if (req.nextUrl.pathname.startsWith('/api/')) {
-      // Skip CSRF check for GET requests and token endpoint
-      if (req.method !== 'GET' && !req.nextUrl.pathname.endsWith('/csrf-token')) {
+      // Skip CSRF check for GET requests, token endpoint, and Supabase auth endpoints
+      const isSupabaseAuthRequest = req.nextUrl.pathname.startsWith('/auth/');
+      if (req.method !== 'GET' && !req.nextUrl.pathname.endsWith('/csrf-token') && !isSupabaseAuthRequest) {
         const token = getTokenFromHeaders(req.headers);
         const storedToken = req.cookies.get('csrf-token')?.value;
         
