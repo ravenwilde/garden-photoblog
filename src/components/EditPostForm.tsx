@@ -4,6 +4,7 @@ import { useState } from 'react';
 // import { format, parseISO } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import type { Post } from '@/types';
+import { getCsrfToken } from '@/lib/csrf-client';
 
 interface EditPostFormProps {
   post: Post;
@@ -48,10 +49,12 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
     setIsSubmitting(true);
 
     try {
+      const token = await getCsrfToken();
       const response = await fetch(`/api/posts/${post.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'x-csrf-token': token
         },
         body: JSON.stringify(formData),
       });

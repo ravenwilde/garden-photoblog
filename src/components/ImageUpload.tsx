@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from 'react';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import ImagePreview from './ImagePreview';
 import type { Image as ImageType } from '@/types';
+import { getCsrfToken } from '@/lib/csrf-client';
 
 interface ImageUploadProps {
   onImagesUploaded: (images: ImageType[]) => void;
@@ -58,8 +59,12 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
           size: file.size
         });
 
+        const token = await getCsrfToken();
         const response = await fetch('/api/upload', {
           method: 'POST',
+          headers: {
+            'x-csrf-token': token
+          },
           body: formData,
         });
 

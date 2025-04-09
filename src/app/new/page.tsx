@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import PostForm from '@/components/PostForm';
 import type { NewPost } from '@/types';
 import { useAuth } from '@/lib/auth';
+import { getCsrfToken } from '@/lib/csrf-client';
 
 export default function NewPost() {
   const router = useRouter();
@@ -41,10 +42,12 @@ export default function NewPost() {
   const handleSubmit = async (post: NewPost) => {
     setIsSubmitting(true);
     try {
+      const token = await getCsrfToken();
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-csrf-token': token
         },
         body: JSON.stringify(post),
       });

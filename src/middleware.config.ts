@@ -1,5 +1,6 @@
 export const config = {
   matcher: [
-    '/api/tags/:path*'
+    '/api/:path*',  // Apply middleware to all API routes
+    '/white-rabbit/:path*'  // Apply middleware to admin routes
   ]
 };

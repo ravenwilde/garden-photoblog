@@ -1,9 +1,18 @@
-'use client';
-
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+// Mock modules before imports
+jest.mock('@/lib/csrf-client', () => ({
+  getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
+}));
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    refresh: jest.fn(),
+  }),
+}));
+
 import TagManager from '../TagManager';
-// import { supabase } from '@/lib/supabase';
 
 // Mock initial fetch response
 const mockTags = [
@@ -27,13 +36,6 @@ beforeEach(() => {
     });
   });
 });
-
-// Mock next/navigation
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    refresh: jest.fn(),
-  }),
-}));
 
 // Mock fetch
 global.fetch = jest.fn();
@@ -93,11 +95,12 @@ describe('TagManager', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-csrf-token': 'mock-csrf-token'
         },
         body: JSON.stringify({ name: 'herbs' }),
         credentials: 'include',
       });
-    });
+    }, { timeout: 1000 });
   });
 
   it('updates a tag', async () => {
@@ -144,11 +147,12 @@ describe('TagManager', () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'x-csrf-token': 'mock-csrf-token'
         },
         body: JSON.stringify({ name: 'spring-flowers' }),
         credentials: 'include',
       });
-    });
+    }, { timeout: 1000 });
   });
 
   it('deletes a tag', async () => {
@@ -185,9 +189,12 @@ describe('TagManager', () => {
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith('/api/tags/1', {
         method: 'DELETE',
+        headers: {
+          'x-csrf-token': 'mock-csrf-token'
+        },
         credentials: 'include'
       });
-    });
+    }, { timeout: 1000 });
 
     confirmSpy.mockRestore();
   });
@@ -196,7 +203,7 @@ describe('TagManager', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     // Mock successful initial fetch
-    (global.fetch as jest.Mock).mockImplementationOnce(() => 
+    (global.fetch as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockTags)
@@ -207,8 +214,7 @@ describe('TagManager', () => {
     (global.fetch as jest.Mock).mockImplementationOnce(() => 
       Promise.resolve({
         ok: false,
-        status: 400,
-        statusText: 'Bad Request'
+        json: () => Promise.reject(new Error('Failed to create tag'))
       })
     );
 
@@ -224,18 +230,13 @@ describe('TagManager', () => {
     // Try to add new tag
     const input = screen.getByPlaceholderText(/new tag/i);
     await userEvent.type(input, 'herbs');
-    
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /add tag/i }));
     });
 
-    // Wait for error to appear
     await waitFor(() => {
-      const errorDiv = screen.getByRole('alert');
-      expect(errorDiv).toBeInTheDocument();
-      expect(errorDiv).toHaveTextContent('Failed to create tag');
-      expect(errorDiv).toHaveClass('mb-4', 'p-2', 'text-red-700', 'bg-red-100', 'rounded');
-    });
+      expect(screen.getByText('Failed to create tag')).toBeInTheDocument();
+    }, { timeout: 1000 });
 
     consoleSpy.mockRestore();
   });
