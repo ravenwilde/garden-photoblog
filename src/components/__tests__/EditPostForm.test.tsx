@@ -88,7 +88,6 @@ describe('EditPostForm', () => {
       onClose: jest.fn(),
       onSuccess: jest.fn(),
     };
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     // Mock fetch for post update
     (global.fetch as jest.Mock).mockResolvedValueOnce({
