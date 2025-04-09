@@ -106,7 +106,8 @@ export async function middleware(req: NextRequest) {
       worker-src 'self' blob:;
     ` : `
       default-src 'self';
-      script-src 'self' 'nonce-${nonce}';
+      script-src 'self' 'nonce-${nonce}' https://vercel.live https://*.vercel.app;
+      script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel.app;
       style-src 'self' 'unsafe-inline';
       img-src 'self' blob: data: https://s3.us-east-005.dream.io;
       font-src 'self';
