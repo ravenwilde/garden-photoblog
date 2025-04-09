@@ -1,5 +1,3 @@
-const CSRF_SECRET = process.env.CSRF_SECRET || crypto.randomUUID();
-
 // Generate a random token using Web Crypto API
 export function generateToken(): string {
   const buffer = new Uint8Array(32);

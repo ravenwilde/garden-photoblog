@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import crypto from 'crypto';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const token = crypto.randomBytes(32).toString('hex');
   const response = NextResponse.json({ token });
   

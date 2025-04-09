@@ -66,7 +66,7 @@ export async function getAllTags(): Promise<Tag[]> {
     return [];
   }
 
-  return tags.map((tag: any) => ({
+  return tags.map((tag: { id: string; name: string; post_tags?: Array<{ post_id: string }> }) => ({
     id: tag.id,
     name: tag.name,
     post_count: tag.post_tags?.length || 0
