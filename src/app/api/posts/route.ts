@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { createPost, getAllPosts, deletePost, updatePost } from '@/lib/posts';
 import type { Post, NewPost } from '@/types';
+import { getServerSession } from '@/lib/server-auth';
 
 export async function GET() {
   try {
@@ -15,7 +17,18 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const session = await getServerSession();
+
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+  }
+
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  if (session.user.email !== adminEmail) {
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
+  }
+
   try {
     const post: NewPost = await request.json();
     

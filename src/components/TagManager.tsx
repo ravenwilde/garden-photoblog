@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { Tag } from '@/lib/tags';
+import { getCsrfToken } from '@/lib/csrf-client';
 
 interface TagManagerProps {
   className?: string;
@@ -51,9 +52,13 @@ export default function TagManager({ className = '' }: TagManagerProps) {
     if (!editingTag || !editName.trim()) return;
 
     try {
+      const token = await getCsrfToken();
       const response = await fetch(`/api/tags/${editingTag.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-csrf-token': token
+        },
         body: JSON.stringify({ name: editName.trim() }),
         credentials: 'include'
       });
@@ -80,8 +85,12 @@ export default function TagManager({ className = '' }: TagManagerProps) {
     }
 
     try {
+      const token = await getCsrfToken();
       const response = await fetch(`/api/tags/${tag.id}`, {
         method: 'DELETE',
+        headers: {
+          'x-csrf-token': token
+        },
         credentials: 'include'
       });
 
@@ -109,18 +118,29 @@ export default function TagManager({ className = '' }: TagManagerProps) {
     if (!value) return;
 
     try {
+      const token = await getCsrfToken();
       const response = await fetch('/api/tags', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-csrf-token': token
+        },
         body: JSON.stringify({ name: value }),
         credentials: 'include'
       });
 
-      if (!response.ok) throw new Error('Failed to create tag');
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create tag');
+      }
       await fetchTags();
       setNewTagValue('');
     } catch (error) {
-      setError('Failed to create tag');
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Failed to create tag');
+      }
       console.error('Error creating tag:', error);
     }
   };

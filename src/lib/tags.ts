@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { createClient } from './supabase/server';
 
 export interface Tag {
   id: string;
@@ -6,7 +6,45 @@ export interface Tag {
   post_count?: number;
 }
 
+export async function createTag(name: string): Promise<Tag> {
+  const supabase = createClient();
+
+  // First check if the tag already exists
+  const { data: existingTag } = await supabase
+    .from('tags')
+    .select('id')
+    .eq('name', name)
+    .single();
+
+  if (existingTag) {
+    throw new Error('A tag with this name already exists');
+  }
+
+  const { data: newTag, error } = await supabase
+    .from('tags')
+    .insert([{ name }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating tag:', error);
+    throw error;
+  }
+
+  if (!newTag) {
+    throw new Error('Failed to create tag');
+  }
+
+  return {
+    id: newTag.id,
+    name: newTag.name,
+    post_count: 0
+  };
+}
+
 export async function getAllTags(): Promise<Tag[]> {
+  const supabase = createClient();
+
   // Get all tags with post count
   const { data: tags, error } = await supabase
     .from('tags')
@@ -24,7 +62,11 @@ export async function getAllTags(): Promise<Tag[]> {
     throw error;
   }
 
-  return tags.map(tag => ({
+  if (!tags) {
+    return [];
+  }
+
+  return tags.map((tag: any) => ({
     id: tag.id,
     name: tag.name,
     post_count: tag.post_tags?.length || 0
@@ -32,6 +74,8 @@ export async function getAllTags(): Promise<Tag[]> {
 }
 
 export async function updateTag(id: string, newName: string): Promise<Tag> {
+  const supabase = createClient();
+
   // First check if the new name already exists
   const { data: existingTag } = await supabase
     .from('tags')
@@ -56,10 +100,20 @@ export async function updateTag(id: string, newName: string): Promise<Tag> {
     throw error;
   }
 
-  return updatedTag;
+  if (!updatedTag) {
+    throw new Error('Tag not found');
+  }
+
+  return {
+    id: updatedTag.id,
+    name: updatedTag.name,
+    post_count: 0
+  };
 }
 
 export async function deleteTag(id: string): Promise<void> {
+  const supabase = createClient();
+
   // First get the tag name
   const { data: tag, error: tagError } = await supabase
     .from('tags')

@@ -1,19 +1,21 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import type { NextRequest } from 'next/server';
 import { deleteTag, updateTag } from '@/lib/tags';
+import { getServerSession } from '@/lib/server-auth';
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   context: { params: { id: string } }
 ) {
-  const { id } = context.params;
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-  const { data: { session } } = await supabase.auth.getSession();
+  const session = await getServerSession();
 
-  if (!session?.user?.email || session.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+  }
+
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  if (session.user.email !== adminEmail) {
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
   try {
@@ -22,7 +24,7 @@ export async function PUT(
       return new NextResponse('Name is required', { status: 400 });
     }
 
-
+    const { id } = context.params;
     const updatedTag = await updateTag(id, name);
     return NextResponse.json(updatedTag);
   } catch (error) {
@@ -34,20 +36,22 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _request: Request,
+  request: NextRequest,
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
-  const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
-  const { data: { session } } = await supabase.auth.getSession();
+  const session = await getServerSession();
 
-  if (!session?.user?.email || session.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+  }
+
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  if (session.user.email !== adminEmail) {
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
   try {
-
     await deleteTag(id);
     return new NextResponse(null, { status: 204 });
   } catch (error) {

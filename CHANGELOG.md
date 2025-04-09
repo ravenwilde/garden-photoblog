@@ -1,8 +1,28 @@
 # Changelog
 
+## [1.2.2] (2025-04-08)
+### Fixed
+- Standardized authentication handling across all API endpoints
+- Fixed unauthorized access issues in tag management and post editing
+- Updated all API routes to use consistent session validation
+- Enhanced error messages for better debugging of auth issues
+
+## [1.2.1] (2025-04-08)
+### Fixed
+- Added missing POST handler for tag creation API endpoint
+- Fixed cookie handling in server-side Supabase client
+
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
 ## Latest Changes
+
+### Security Improvements (2025-04-08)
+- Added Content Security Policy (CSP) headers
+- Implemented rate limiting for API endpoints
+- Added CSRF protection for all POST/PUT/DELETE requests
+- Enhanced security headers (X-Frame-Options, X-Content-Type-Options, etc.)
+- Added Strict Transport Security (HSTS) configuration
+
 
 ### Test Fixes and Error Handling Improvements (2025-04-08)
 - Fixed EditPostForm tests to properly handle tag removal and form submission

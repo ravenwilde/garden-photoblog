@@ -1,35 +1,44 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from './supabase';
+import { createClient } from './supabase/client';
+import { getCsrfToken } from './csrf-client';
 
 interface AuthContextType {
   isAdmin: boolean;
+  userEmail: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({
+const defaultContext: AuthContextType = {
   isAdmin: false,
+  userEmail: null,
   signIn: async () => {},
   signOut: async () => {},
   loading: true
-});
+};
+
+const AuthContext = createContext<AuthContextType>(defaultContext);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        const supabase = createClient();
         const { data: { session } } = await supabase.auth.getSession();
         const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+        setUserEmail(session?.user?.email || null);
         setIsAdmin(session?.user?.email === adminEmail);
       } catch (error) {
         console.error('Error checking auth:', error);
         setIsAdmin(false);
+        setUserEmail(null);
       } finally {
         setLoading(false);
       }
@@ -39,18 +48,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkAuth();
 
     // Subscribe to auth changes
+    const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       setLoading(true);
       try {
         if (event === 'SIGNED_OUT') {
           setIsAdmin(false);
+          setUserEmail(null);
         } else {
           const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+          setUserEmail(session?.user?.email || null);
           setIsAdmin(session?.user?.email === adminEmail);
         }
       } catch (error) {
         console.error('Error handling auth change:', error);
         setIsAdmin(false);
+        setUserEmail(null);
       } finally {
         setLoading(false);
       }
@@ -70,42 +83,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [loading, isAdmin]);
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-
-    // Set auth cookie
-    await fetch('/api/auth/set-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ session: data.session }),
-    });
-  };
-
-  const signOut = async () => {
-    setLoading(true);
     try {
-      // Clear client-side session
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
-      // Clear server-side session
-      await fetch('/api/auth/clear-session', {
-        method: 'POST',
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      setIsAdmin(false);
-    } finally {
-      setLoading(false);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error signing in:', error);
+      throw error;
     }
   };
 
+  const signOut = async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      const token = await getCsrfToken();
+      await fetch('/api/auth/clear-session', {
+        method: 'POST',
+        headers: {
+          'x-csrf-token': token
+        }
+      });
+    } catch (error) {
+      console.error('Error signing out:', error);
+      throw error;
+    }
+  };
+
+  const value: AuthContextType = {
+    isAdmin,
+    userEmail,
+    signIn,
+    signOut,
+    loading
+  };
+
   return (
-    <AuthContext.Provider value={{ isAdmin, signIn, signOut, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
