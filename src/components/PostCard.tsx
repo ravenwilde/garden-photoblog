@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import ImageModal from './ImageModal';
+import EditPostForm from './EditPostForm';
 import { useAuth } from '@/lib/auth';
 import { deletePostAction } from '@/app/actions';
 import type { Post } from '@/types';
@@ -17,6 +18,7 @@ interface PostCardProps {
 export default function PostCard({ post }: PostCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { isAdmin } = useAuth();
   const router = useRouter();
 
@@ -55,35 +57,44 @@ export default function PostCard({ post }: PostCardProps) {
               {post.title}
             </h2>
             {isAdmin && (
-              <button
-                onClick={async () => {
-                  if (window.confirm('Are you sure you want to delete this post?')) {
-                    setIsDeleting(true);
-                    try {
-                      const result = await deletePostAction(post.id);
-                      if (result.success) {
-                        router.refresh();
-                      } else {
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="p-1 text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
+                  title="Edit post"
+                >
+                  <PencilSquareIcon className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={async () => {
+                    if (window.confirm('Are you sure you want to delete this post?')) {
+                      setIsDeleting(true);
+                      try {
+                        const result = await deletePostAction(post.id);
+                        if (result.success) {
+                          router.refresh();
+                        } else {
+                          alert('Failed to delete post');
+                        }
+                      } catch (error) {
+                        console.error('Error deleting post:', error);
                         alert('Failed to delete post');
+                      } finally {
+                        setIsDeleting(false);
                       }
-                    } catch (error) {
-                      console.error('Error deleting post:', error);
-                      alert('Failed to delete post');
-                    } finally {
-                      setIsDeleting(false);
                     }
-                  }
-                }}
-                disabled={isDeleting}
-                className="p-1 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
-                title="Delete post"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
+                  }}
+                  disabled={isDeleting}
+                  className="p-1 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
+                  title="Delete post"
+                >
+                  <TrashIcon className="h-5 w-5" />
+                </button>
+              </div>
             )}
           </div>
           <time className="text-sm text-gray-500 dark:text-gray-400">
-            {format(new Date(post.date), 'MMM d, yyyy')}
+            {format(parseISO(post.date), 'MMM d, yyyy')}
           </time>
         </div>
         
@@ -117,6 +128,23 @@ export default function PostCard({ post }: PostCardProps) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      {isEditing && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
+            <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-white">Edit Post</h2>
+            </div>
+            <EditPostForm
+              post={post}
+              onClose={() => setIsEditing(false)}
+              onSuccess={() => {
+                setIsEditing(false);
+                router.refresh();
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

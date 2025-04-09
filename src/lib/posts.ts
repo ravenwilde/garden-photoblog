@@ -15,7 +15,7 @@ export async function getAllPosts(): Promise<Post[]> {
       images (id, url, alt, width, height),
       tags (name)
     `)
-    .order('created_at', { ascending: false });
+    .order('date', { ascending: false });
 
   if (error) {
     console.error('Error fetching posts:', error);
