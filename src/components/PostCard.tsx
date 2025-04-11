@@ -26,8 +26,8 @@ export default function PostCard({ post }: PostCardProps) {
     <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className="relative h-64 bg-gray-100 dark:bg-gray-700">
         <div
-          className="relative w-full h-full cursor-pointer"
-          onClick={() => post.images?.length > 0 && setIsModalOpen(true)}
+          className={`relative w-full h-full ${post.images?.[0]?.url ? 'cursor-pointer' : ''}`}
+          onClick={() => post.images?.[0]?.url && setIsModalOpen(true)}
         >
           {post.images?.[0]?.url ? (
             <Image

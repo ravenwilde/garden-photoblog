@@ -23,11 +23,11 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   const router = useRouter();
   return (
     <div className="relative w-full h-[60vh] mb-12 group">
-      <div 
-        className="block w-full h-full cursor-pointer" 
-        onClick={() => setIsModalOpen(true)}>
+      <div className="block w-full h-full">
         {/* Image container with gradient overlay */}
-        <div className="relative w-full h-full bg-gray-100 dark:bg-gray-800 rounded-xl">
+        <div 
+          className={`relative w-full h-full bg-gray-100 dark:bg-gray-800 rounded-xl ${post.images?.[0]?.url ? 'cursor-pointer' : ''}`}
+          onClick={() => post.images?.[0]?.url && setIsModalOpen(true)}>
           {post.images?.[0]?.url ? (
             <>
               <Image
