@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { type RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 
-export async function getServerSession() {
+export async function getServerUser() {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -31,12 +31,7 @@ export async function getServerSession() {
     return null;
   }
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  // We already have the user data, no need for another call
 
-  if (sessionError || !session) {
-    console.error('Session error:', sessionError?.message);
-    return null;
-  }
-
-  return session;
+  return user;
 }

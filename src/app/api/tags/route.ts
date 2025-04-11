@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getAllTags, createTag } from '@/lib/tags';
-import { getServerSession } from '@/lib/server-auth';
+import { getServerUser } from '@/lib/server-auth';
 
 export async function GET() {
   const tags = await getAllTags();
@@ -10,14 +10,14 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const user = await getServerUser();
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!user?.email) {
+      return NextResponse.json({ error: 'Unauthorized - No user' }, { status: 401 });
     }
 
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-    if (session.user.email !== adminEmail) {
+    if (user.email !== adminEmail) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

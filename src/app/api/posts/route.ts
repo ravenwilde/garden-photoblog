@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createPost, getAllPosts, deletePost, updatePost } from '@/lib/posts';
 import type { Post, NewPost } from '@/types';
-import { getServerSession } from '@/lib/server-auth';
+import { getServerUser } from '@/lib/server-auth';
 
 export async function GET() {
   try {
@@ -18,14 +18,14 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession();
+  const user = await getServerUser();
 
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+  if (!user?.email) {
+    return NextResponse.json({ error: 'Unauthorized - No user' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (session.user.email !== adminEmail) {
+  if (user.email !== adminEmail) {
     return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 

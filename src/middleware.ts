@@ -41,8 +41,11 @@ export async function middleware(req: NextRequest) {
       }
     );
 
-    // Refresh session if needed
-    const authResponse = await supabase.auth.getSession();
+    // Verify user authentication
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) {
+      console.error('Auth error:', error.message);
+    }
 
     // Check rate limiting and CSRF for API routes
     if (req.nextUrl.pathname.startsWith('/api/')) {
@@ -62,17 +65,16 @@ export async function middleware(req: NextRequest) {
 
       // Check auth for protected routes
       if (req.method !== 'GET' && !req.nextUrl.pathname.endsWith('/csrf-token')) {
-        const session = authResponse.data.session;
-        if (!session?.user?.email) {
-          console.log('No user email found in session');
-          console.log('Session:', session);
+        if (!user?.email) {
+          console.log('No user email found');
+          console.log('User:', user);
           console.log('Cookies:', req.cookies.getAll());
-          return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+          return NextResponse.json({ error: 'Unauthorized - No user' }, { status: 401 });
         }
 
         const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-        if (session.user.email !== adminEmail) {
-          console.log('User is not admin:', session.user.email);
+        if (user.email !== adminEmail) {
+          console.log('User is not admin:', user.email);
           console.log('Expected admin:', adminEmail);
           return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
         }

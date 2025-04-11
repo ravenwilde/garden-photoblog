@@ -31,10 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const checkAuth = async () => {
       try {
         const supabase = createClient();
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
         const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-        setUserEmail(session?.user?.email || null);
-        setIsAdmin(session?.user?.email === adminEmail);
+        setUserEmail(user?.email || null);
+        setIsAdmin(user?.email === adminEmail);
       } catch (error) {
         console.error('Error checking auth:', error);
         setIsAdmin(false);
