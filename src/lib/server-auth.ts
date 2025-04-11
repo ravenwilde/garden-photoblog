@@ -24,20 +24,17 @@ export async function getServerSession() {
     }
   );
 
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const { data: { user }, error } = await supabase.auth.getUser();
 
-  if (error) {
-    console.error('Error:', error.message);
+  if (error || !user) {
+    console.error('Error:', error?.message);
     return null;
   }
 
-  if (!session) {
-    return null;
-  }
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-  if (userError || !user) {
+  if (sessionError || !session) {
+    console.error('Session error:', sessionError?.message);
     return null;
   }
 

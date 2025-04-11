@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['127.0.0.1:50269', '127.0.0.1:3000']
+    }
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -22,6 +27,13 @@ const nextConfig = {
       },
     ],
   },
+}
+
+// Log environment mode
+if (process.env.NODE_ENV === 'production') {
+  console.log('🚀 Running in production mode')
+} else {
+  console.log('🛠️ Running in development mode')
 }
 
 module.exports = nextConfig
