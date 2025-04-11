@@ -25,11 +25,11 @@ export default function PostCard({ post }: PostCardProps) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg">
       <div className="relative h-64 bg-gray-100 dark:bg-gray-700">
-        {post.images.length > 0 && (
-          <div
-            className="relative w-full h-full cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
-          >
+        <div
+          className={`relative w-full h-full ${post.images?.[0]?.url ? 'cursor-pointer' : ''}`}
+          onClick={() => post.images?.[0]?.url && setIsModalOpen(true)}
+        >
+          {post.images?.[0]?.url ? (
             <Image
               src={post.images[0].url}
               alt={post.images[0].alt || 'Garden photo'}
@@ -41,8 +41,12 @@ export default function PostCard({ post }: PostCardProps) {
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwPTE+PDYxOjs7QUJCNjdKOzshPVFXR1NJV0JWYWNmY2RKbHRuXGf/2wBDARUXFx4aHR4eHGg7Ojtoa2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2f/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
-          </div>
-        )}
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+              <p>No image available</p>
+            </div>
+          )}
+        </div>
         {post.images.length > 1 && (
           <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded text-sm">
             +{post.images.length - 1} more
