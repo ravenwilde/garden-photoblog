@@ -29,8 +29,8 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
         {/* Image container with gradient overlay */}
         <div className="relative w-full h-full">
           <Image
-            src={post.images[0].url}
-            alt={post.images[0].alt || post.title}
+            src={post.images?.[0]?.url || '/images/fallback-garden.jpg'}
+            alt={post.images?.[0]?.alt || post.title}
             fill
             className="object-cover rounded-xl"
             sizes="(min-width: 1536px) 1536px, 100vw"
