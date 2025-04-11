@@ -9,20 +9,16 @@ export interface Tag {
 export async function createTag(name: string): Promise<Tag> {
   const supabase = createClient();
 
-  // First check if the tag already exists
-  const { data: existingTag } = await supabase
-    .from('tags')
-    .select('id')
-    .eq('name', name)
-    .single();
-
-  if (existingTag) {
-    throw new Error('A tag with this name already exists');
-  }
-
   const { data: newTag, error } = await supabase
     .from('tags')
-    .insert([{ name }])
+    .upsert([{ 
+      name,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }], { 
+      onConflict: 'name',
+      ignoreDuplicates: true 
+    })
     .select()
     .single();
 

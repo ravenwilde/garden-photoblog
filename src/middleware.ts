@@ -92,32 +92,36 @@ export async function middleware(req: NextRequest) {
     // Content Security Policy
     const isDev = process.env.NODE_ENV === 'development';
     
-    const csp = isDev ? `
-      default-src 'self';
-      script-src 'self' 'unsafe-eval' 'unsafe-inline';
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://s3.us-east-005.dream.io;
-      font-src 'self';
-      object-src 'none';
-      base-uri 'self';
-      form-action 'self';
-      frame-ancestors 'none';
-      connect-src 'self' ws: http: https:;
-      worker-src 'self' blob:;
-    ` : `
-      default-src 'self';
-      script-src 'self' 'nonce-${nonce}' https://vercel.live https://*.vercel.app;
-      script-src-elem 'self' 'unsafe-inline' https://vercel.live https://*.vercel.app;
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://s3.us-east-005.dream.io;
-      font-src 'self';
-      object-src 'none';
-      base-uri 'self';
-      form-action 'self';
-      frame-ancestors 'none';
-      connect-src 'self' https:;
-      worker-src 'self' blob:;
-    `.replace(/\s+/g, ' ').trim();
+    const cspDirectives = isDev ? {
+      'default-src': "'self'",
+      'script-src': "'self' 'unsafe-eval' 'unsafe-inline'",
+      'style-src': "'self' 'unsafe-inline'",
+      'img-src': "'self' blob: data: https://s3.us-east-005.dream.io",
+      'font-src': "'self'",
+      'object-src': "'none'",
+      'base-uri': "'self'",
+      'form-action': "'self'",
+      'frame-ancestors': "'none'",
+      'connect-src': "'self' ws: http: https:",
+      'worker-src': "'self' blob:"
+    } : {
+      'default-src': "'self'",
+      'script-src': `'self' 'nonce-${nonce}' https://vercel.live https://*.vercel.app`,
+      'script-src-elem': "'self' 'unsafe-inline' https://vercel.live https://*.vercel.app",
+      'style-src': "'self' 'unsafe-inline'",
+      'img-src': "'self' blob: data: https://s3.us-east-005.dream.io",
+      'font-src': "'self'",
+      'object-src': "'none'",
+      'base-uri': "'self'",
+      'form-action': "'self'",
+      'frame-ancestors': "'none'",
+      'connect-src': "'self' https:",
+      'worker-src': "'self' blob:"
+    };
+
+    const csp = Object.entries(cspDirectives)
+      .map(([key, value]) => `${key} ${value}`)
+      .join(';');
 
     // Set security headers
     res.headers.set('Content-Security-Policy', csp);

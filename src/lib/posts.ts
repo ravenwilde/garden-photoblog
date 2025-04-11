@@ -45,7 +45,9 @@ export async function createPost(post: NewPost): Promise<Post> {
       title: post.title,
       description: post.description,
       notes: post.notes,
-      date: post.date
+      date: post.date,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     })
     .select('id')
     .single();
@@ -64,7 +66,9 @@ export async function createPost(post: NewPost): Promise<Post> {
         url: image.url,
         alt: image.alt || '',
         width: image.width,
-        height: image.height
+        height: image.height,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       })));
 
     if (imageError) {
