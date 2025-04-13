@@ -1,8 +1,4 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import { CookieOptions } from '@supabase/ssr';
-import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies';
 
 export function createClient() {
   // Use service role key for server-side operations
