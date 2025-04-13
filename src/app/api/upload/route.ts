@@ -4,14 +4,14 @@ import { uploadImage } from '@/lib/dreamobjects';
 import { getServerSession } from '@/lib/server-auth';
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession();
+  const sessionData = await getServerSession();
 
-  if (!session?.user?.email) {
+  if (!sessionData || !sessionData.user?.email) {
     return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (session.user.email !== adminEmail) {
+  if (sessionData.user.email !== adminEmail) {
     return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 

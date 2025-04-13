@@ -24,26 +24,26 @@ export async function getServerSession() {
     }
   );
 
-  // First get the user to ensure authentication
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  // Get both user and session
+  const [{ data: { user }, error: userError }, { data: { session }, error: sessionError }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession()
+  ]);
 
+  // Handle errors gracefully
   if (userError) {
-    throw new Error(`Auth error: ${userError.message}`);
+    console.error('Auth error:', userError);
+    return null;
   }
-
-  if (!user) {
-    throw new Error('No user found');
-  }
-
-  // Then get the session to ensure it's valid
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
   if (sessionError) {
-    throw new Error(`Session error: ${sessionError.message}`);
+    console.error('Session error:', sessionError);
+    return null;
   }
 
-  if (!session) {
-    throw new Error('No valid session found');
+  // Both user and session must be present
+  if (!user || !session) {
+    return null;
   }
 
   return { user, session };

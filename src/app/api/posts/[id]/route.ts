@@ -9,14 +9,14 @@ export async function PUT(
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
-  const session = await getServerSession();
+  const sessionData = await getServerSession();
 
-  if (!session?.user?.email) {
+  if (!sessionData || !sessionData.user?.email) {
     return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (session.user.email !== adminEmail) {
+  if (sessionData.user.email !== adminEmail) {
     return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
@@ -135,14 +135,14 @@ export async function DELETE(
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
-  const session = await getServerSession();
+  const sessionData = await getServerSession();
 
-  if (!session?.user?.email) {
+  if (!sessionData || !sessionData.user?.email) {
     return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (session.user.email !== adminEmail) {
+  if (sessionData.user.email !== adminEmail) {
     return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
@@ -150,14 +150,26 @@ export async function DELETE(
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   try {
-    const { error } = await supabase
+    // Delete post-tag relationships first
+    const { error: tagError } = await supabase
+      .from('post_tags')
+      .delete()
+      .eq('post_id', id);
+
+    if (tagError) {
+      console.error('Error deleting post-tag relationships:', tagError);
+      return NextResponse.json({ error: tagError.message }, { status: 500 });
+    }
+
+    // Then delete the post
+    const { error: postError } = await supabase
       .from('posts')
       .delete()
       .eq('id', id);
 
-    if (error) {
-      console.error('Error deleting post:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (postError) {
+      console.error('Error deleting post:', postError);
+      return NextResponse.json({ error: postError.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });

@@ -7,14 +7,14 @@ export async function PUT(
   request: NextRequest,
   context: { params: { id: string } }
 ) {
-  const session = await getServerSession();
+  const sessionData = await getServerSession();
 
-  if (!session?.user?.email) {
+  if (!sessionData || !sessionData.user?.email) {
     return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (session.user.email !== adminEmail) {
+  if (sessionData.user.email !== adminEmail) {
     return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
@@ -40,14 +40,14 @@ export async function DELETE(
   context: { params: { id: string } }
 ) {
   const { id } = context.params;
-  const session = await getServerSession();
+  const sessionData = await getServerSession();
 
-  if (!session?.user?.email) {
+  if (!sessionData || !sessionData.user?.email) {
     return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (session.user.email !== adminEmail) {
+  if (sessionData.user.email !== adminEmail) {
     return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
