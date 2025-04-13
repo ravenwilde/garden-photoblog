@@ -71,7 +71,12 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to upload image');
+          const errorMessage = data.error || 'Failed to upload image';
+          // Check for EXIF cleaning error
+          if (errorMessage.includes('EXIF data')) {
+            throw new Error('Privacy Protection: ' + errorMessage);
+          }
+          throw new Error(errorMessage);
         }
 
         // Update progress

@@ -27,16 +27,15 @@ export async function getServerSession() {
   const { data: { user }, error } = await supabase.auth.getUser();
 
   if (error || !user) {
-    console.error('Error:', error?.message);
+    console.error('Auth error:', error?.message);
     return null;
   }
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  // Get the session for additional context if needed
+  const { data: { session } } = await supabase.auth.getSession();
 
-  if (sessionError || !session) {
-    console.error('Session error:', sessionError?.message);
-    return null;
-  }
-
-  return session;
+  return {
+    ...session,
+    user  // Use the authenticated user data
+  };
 }

@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import exifCleaner from 'exif-cleaner';
 
 if (!process.env.DREAMOBJECTS_ACCESS_KEY) {
   throw new Error('DREAMOBJECTS_ACCESS_KEY is not set');
@@ -102,6 +103,60 @@ export function getSignedImageUrl(imageKey: string, expiresIn: number = 3600): s
   return `https://${BUCKET_NAME}.s3.${REGION}.dream.io${canonicalUri}?${queryParams.toString()}`;
 }
 
+class ExifCleaningError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ExifCleaningError';
+  }
+}
+
+interface ExifResult {
+  buffer: Buffer;
+  hadExif: boolean;
+  cleaned: boolean;
+}
+
+async function processExifData(buffer: ArrayBuffer): Promise<ExifResult> {
+  try {
+    // Convert ArrayBuffer to Buffer for exif-cleaner
+    const inputBuffer = Buffer.from(buffer);
+    
+    let hasExifData = false;
+    // Parse and check for EXIF data
+    try {
+      const exifData = exifCleaner.parse(inputBuffer);
+      if (Object.keys(exifData).length > 0) {
+        hasExifData = true;
+        console.log('EXIF data found:', exifData);
+      } else {
+        console.log('No EXIF data found in image');
+        return { buffer: inputBuffer, hadExif: false, cleaned: false };
+      }
+    } catch (exifError) {
+      console.log('No EXIF data found or error parsing:', exifError instanceof Error ? exifError.message : exifError);
+      return { buffer: inputBuffer, hadExif: false, cleaned: false };
+    }
+    
+    // If we found EXIF data, try to clean it
+    if (hasExifData) {
+      try {
+        const cleanedBuffer = await exifCleaner.clean(inputBuffer);
+        console.log('EXIF data cleaned successfully');
+        return { buffer: cleanedBuffer, hadExif: true, cleaned: true };
+      } catch (cleanError) {
+        console.error('Failed to clean EXIF data:', cleanError instanceof Error ? cleanError.message : cleanError);
+        throw new ExifCleaningError('Found EXIF data but failed to clean it. For privacy reasons, the upload has been cancelled.');
+      }
+    }
+    
+    // This case should never happen as we return early if no EXIF data is found
+    return { buffer: inputBuffer, hadExif: false, cleaned: false };
+  } catch (error) {
+    console.error('Error cleaning EXIF data:', error instanceof Error ? error.message : error);
+    throw new ExifCleaningError('Failed to clean EXIF data from image. For privacy reasons, the upload has been cancelled.');
+  }
+}
+
 export async function uploadImage(file: File): Promise<UploadedImage> {
   try {
     const buffer = await file.arrayBuffer();
@@ -122,8 +177,12 @@ export async function uploadImage(file: File): Promise<UploadedImage> {
     const amzDate = now.toISOString().replace(/[:\-]|\.[0-9]{3}/g, '');
     const dateStamp = amzDate.slice(0, 8);
 
-    // Convert ArrayBuffer to Buffer for consistent handling
-    const bufferData = Buffer.from(buffer);
+    // Process EXIF data
+    const { buffer: processedBuffer, hadExif, cleaned } = await processExifData(buffer);
+    if (hadExif) {
+      console.log('Image had EXIF data and was', cleaned ? 'cleaned successfully' : 'not cleaned');
+    }
+    const bufferData = processedBuffer;
     
     // Create canonical request
     const contentType = file.type;

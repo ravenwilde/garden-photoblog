@@ -1,6 +1,17 @@
 import { Post, NewPost, Image } from '@/types';
 import { supabase } from './supabase';
 
+// Helper to refresh schema cache
+async function refreshSchemaCache() {
+  try {
+    // Re-initialize the client to refresh schema
+    await supabase.from('images').select('id').limit(1);
+    await supabase.from('posts').select('id').limit(1);
+  } catch (error) {
+    console.warn('Failed to refresh schema cache:', error);
+  }
+}
+
 export async function getAllPosts(): Promise<Post[]> {
   const { data: posts, error } = await supabase
     .from('posts')
@@ -39,6 +50,9 @@ export async function getAllPosts(): Promise<Post[]> {
 }
 
 export async function createPost(post: NewPost): Promise<Post> {
+  // Refresh schema cache before operations
+  await refreshSchemaCache();
+  const timestamp = new Date().toISOString();
   const { data: newPost, error: postError } = await supabase
     .from('posts')
     .insert({
@@ -46,8 +60,8 @@ export async function createPost(post: NewPost): Promise<Post> {
       description: post.description,
       notes: post.notes,
       date: post.date,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      created_at: timestamp,
+      updated_at: timestamp
     })
     .select('id')
     .single();
@@ -59,17 +73,16 @@ export async function createPost(post: NewPost): Promise<Post> {
 
   // Insert images
   if (post.images.length > 0) {
-    const { error: imageError } = await supabase
-      .from('images')
-      .insert(post.images.map((image: Image) => ({
+    // Use raw SQL to insert images with timestamps
+    const { error: imageError } = await supabase.rpc('insert_images', {
+      image_data: post.images.map((image: Image) => ({
         post_id: newPost.id,
         url: image.url,
         alt: image.alt || '',
         width: image.width,
-        height: image.height,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })));
+        height: image.height
+      }))
+    });
 
     if (imageError) {
       console.error('Error inserting images:', imageError);
