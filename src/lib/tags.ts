@@ -7,14 +7,12 @@ export interface Tag {
 }
 
 export async function createTag(name: string): Promise<Tag> {
-  const supabase = createClient();
+  const supabase = await createClient(true); // Use service role key for admin operations
 
   const { data: newTag, error } = await supabase
     .from('tags')
     .upsert([{ 
-      name,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      name
     }], { 
       onConflict: 'name',
       ignoreDuplicates: true 
@@ -39,7 +37,7 @@ export async function createTag(name: string): Promise<Tag> {
 }
 
 export async function getAllTags(): Promise<Tag[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Get all tags with post count
   const { data: tags, error } = await supabase
@@ -70,7 +68,7 @@ export async function getAllTags(): Promise<Tag[]> {
 }
 
 export async function updateTag(id: string, newName: string): Promise<Tag> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // First check if the new name already exists
   const { data: existingTag } = await supabase
@@ -108,7 +106,7 @@ export async function updateTag(id: string, newName: string): Promise<Tag> {
 }
 
 export async function deleteTag(id: string): Promise<void> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // First get the tag name
   const { data: tag, error: tagError } = await supabase

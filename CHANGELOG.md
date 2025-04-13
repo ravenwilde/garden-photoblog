@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0] (2025-04-13)
+### Added
+- EXIF data cleaning for uploaded images to enhance privacy
+- Type-safe database schema definitions
+- Image insert function for secure file uploads
+
+### Changed
+- Enhanced authentication flow with combined cookie-based and service role auth
+- Improved error handling across all API endpoints
+- Added cascade delete for post-tag relationships
+
+### Security
+- Added frame-src CSP headers for Vercel preview environments
+- Implemented stricter type checking for image uploads
+- Enhanced session validation in middleware
+
 ## [1.2.3] (2025-04-09)
 ### Fixed
 - Updated component tests to handle CSRF token validation

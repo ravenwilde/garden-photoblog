@@ -24,19 +24,27 @@ export async function getServerSession() {
     }
   );
 
-  const { data: { user }, error } = await supabase.auth.getUser();
+  // Get both user and session
+  const [{ data: { user }, error: userError }, { data: { session }, error: sessionError }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession()
+  ]);
 
-  if (error || !user) {
-    console.error('Error:', error?.message);
+  // Handle errors gracefully
+  if (userError) {
+    console.error('Auth error:', userError);
     return null;
   }
 
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-  if (sessionError || !session) {
-    console.error('Session error:', sessionError?.message);
+  if (sessionError) {
+    console.error('Session error:', sessionError);
     return null;
   }
 
-  return session;
+  // Both user and session must be present
+  if (!user || !session) {
+    return null;
+  }
+
+  return { user, session };
 }

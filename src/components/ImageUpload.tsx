@@ -10,10 +10,12 @@ interface ImageUploadProps {
   onImagesUploaded: (images: ImageType[]) => void;
 }
 
+import { UploadError, UploadErrorType } from '@/types/upload';
+
 interface UploadingFile {
   file: File;
   progress: number;
-  error?: string;
+  error?: UploadError;
 }
 
 export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
@@ -71,7 +73,19 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to upload image');
+          const errorMessage = data.error || 'Failed to upload image';
+          const error: UploadError = {
+            type: errorMessage.includes('EXIF data')
+              ? UploadErrorType.EXIF_CLEAN_FAILED
+              : UploadErrorType.UPLOAD_FAILED,
+            message: errorMessage.includes('EXIF data')
+              ? 'Image contains sensitive EXIF data that could not be removed. Upload halted for privacy protection.'
+              : errorMessage
+          };
+          setUploadingFiles(prev => prev.map(f => 
+            f.file === file ? { ...f, error } : f
+          ));
+          throw new Error(error.message);
         }
 
         // Update progress
@@ -84,8 +98,12 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
 
       } catch (error) {
         console.error('Upload error:', error instanceof Error ? error.message : error);
+        const uploadError: UploadError = {
+          type: UploadErrorType.UPLOAD_FAILED,
+          message: error instanceof Error ? error.message : 'Upload failed'
+        };
         setUploadingFiles(prev => prev.map((f) => 
-          f.file === file ? { ...f, error: error instanceof Error ? error.message : 'Upload failed' } : f
+          f.file === file ? { ...f, error: uploadError } : f
         ));
       }
     }

@@ -1,38 +1,45 @@
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { CookieOptions } from '@supabase/ssr';
-import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies';
 
-export function createClient() {
+export async function createClient(useServiceRole: boolean = false) {
+  if (useServiceRole) {
+    // Use service role key for admin operations
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set. This key is required for admin operations.');
+    }
+    return createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    );
+  }
+
+  // Use cookie-based auth for normal operations
+  const cookieStore = await cookies();
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          try {
-            const cookieStore = cookies() as unknown as RequestCookies;
-            return cookieStore.get(name)?.value;
-          } catch (error) {
-            console.error('Error getting cookie:', error);
-            return undefined;
-          }
+        async get(name: string) {
+          const cookie = cookieStore.get(name);
+          return cookie?.value;
         },
-        set(name: string, value: string, options: CookieOptions) {
-          try {
-            const cookieStore = cookies() as unknown as RequestCookies;
-            cookieStore.set(name, value, options);
-          } catch (error) {
-            console.error('Error setting cookie:', error);
-          }
+        async set(name: string, value: string, options: CookieOptions) {
+          const cookieOptions = { name, value, ...options };
+          cookieStore.set(cookieOptions);
         },
-        remove(name: string, options: CookieOptions) {
-          try {
-            const cookieStore = cookies() as unknown as RequestCookies;
-            cookieStore.delete(name, options);
-          } catch (error) {
-            console.error('Error removing cookie:', error);
-          }
+        async remove(name: string, options: CookieOptions) {
+          const cookieOptions = { name, value: '', ...options };
+          cookieStore.set(cookieOptions);
         },
       },
     }

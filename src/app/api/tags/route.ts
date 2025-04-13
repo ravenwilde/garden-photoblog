@@ -10,14 +10,14 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const sessionData = await getServerSession();
 
-    if (!session?.user?.email) {
+    if (!sessionData || !sessionData.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-    if (session.user.email !== adminEmail) {
+    if (sessionData.user.email !== adminEmail) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(tag);
   } catch (error) {
     console.error('Error creating tag:', error);
+    const message = error instanceof Error ? error.message : 'Failed to create tag';
     return NextResponse.json(
-      { error: 'Failed to create tag' },
+      { error: message },
       { status: 500 }
     );
   }
