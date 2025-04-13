@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
+import type { UploadError } from '@/types/upload';
+
 interface ImagePreviewProps {
   file: File;
   onRemove: () => void;
-  error?: string;
+  error?: UploadError;
   progress?: number;
 }
 
@@ -115,7 +117,7 @@ export default function ImagePreview({ file, onRemove, error, progress }: ImageP
       {/* Error message */}
       {error && (
         <div className="p-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20">
-          {error}
+          {error.message}
         </div>
       )}
     </div>

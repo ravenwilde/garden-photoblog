@@ -73,16 +73,25 @@ export async function createPost(post: NewPost): Promise<Post> {
 
   // Insert images
   if (post.images.length > 0) {
-    // Use raw SQL to insert images with timestamps
-    const { error: imageError } = await supabase.rpc('insert_images', {
-      image_data: post.images.map((image: Image) => ({
-        post_id: newPost.id,
-        url: image.url,
-        alt: image.alt || '',
-        width: image.width,
-        height: image.height
-      }))
-    });
+    type ImageInsertData = {
+      post_id: string;
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+
+    const imageData: ImageInsertData[] = post.images.map((image: Image) => ({
+      post_id: newPost.id,
+      url: image.url,
+      alt: image.alt || '',
+      width: image.width,
+      height: image.height
+    }));
+
+    const { error: imageError } = await supabase
+      .rpc('insert_images', { image_data: imageData })
+      .throwOnError();
 
     if (imageError) {
       console.error('Error inserting images:', imageError);

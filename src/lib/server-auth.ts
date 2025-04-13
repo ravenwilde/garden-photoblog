@@ -24,18 +24,27 @@ export async function getServerSession() {
     }
   );
 
-  const { data: { user }, error } = await supabase.auth.getUser();
+  // First get the user to ensure authentication
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-  if (error || !user) {
-    console.error('Auth error:', error?.message);
-    return null;
+  if (userError) {
+    throw new Error(`Auth error: ${userError.message}`);
   }
 
-  // Get the session for additional context if needed
-  const { data: { session } } = await supabase.auth.getSession();
+  if (!user) {
+    throw new Error('No user found');
+  }
 
-  return {
-    ...session,
-    user  // Use the authenticated user data
-  };
+  // Then get the session to ensure it's valid
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+  if (sessionError) {
+    throw new Error(`Session error: ${sessionError.message}`);
+  }
+
+  if (!session) {
+    throw new Error('No valid session found');
+  }
+
+  return { user, session };
 }
