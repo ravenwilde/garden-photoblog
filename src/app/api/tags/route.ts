@@ -30,8 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(tag);
   } catch (error) {
     console.error('Error creating tag:', error);
+    const message = error instanceof Error ? error.message : 'Failed to create tag';
     return NextResponse.json(
-      { error: 'Failed to create tag' },
+      { error: message },
       { status: 500 }
     );
   }

@@ -12,9 +12,7 @@ export async function createTag(name: string): Promise<Tag> {
   const { data: newTag, error } = await supabase
     .from('tags')
     .upsert([{ 
-      name,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      name
     }], { 
       onConflict: 'name',
       ignoreDuplicates: true 
