@@ -72,6 +72,12 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
 
         const data = await response.json();
 
+        // Ensure timestampTaken is included in uploadedImages
+        const imageWithTimestamp = {
+          ...data,
+          timestampTaken: data.timestampTaken,
+        };
+
         if (!response.ok) {
           const errorMessage = data.error || 'Failed to upload image';
           const error: UploadError = {
@@ -93,8 +99,8 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
           f.file === file ? { ...f, progress: 100 } : f
         ));
 
-        uploadedImages.push(data);
-        console.log('Upload successful:', data);
+        uploadedImages.push(imageWithTimestamp);
+        console.log('Upload successful:', imageWithTimestamp);
 
       } catch (error) {
         console.error('Upload error:', error instanceof Error ? error.message : error);

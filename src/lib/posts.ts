@@ -90,9 +90,7 @@ export async function createPost(post: NewPost): Promise<Post> {
     }));
 
     const { error: imageError } = await supabase
-      .rpc('insert_images', { image_data: imageData })
-      .throwOnError();
-
+      .rpc('insert_images', { image_data: imageData });
     if (imageError) {
       console.error('Error inserting images:', imageError);
       throw imageError;

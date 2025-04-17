@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import exifCleaner from 'exif-cleaner';
+
 
 if (!process.env.DREAMOBJECTS_ACCESS_KEY) {
   throw new Error('DREAMOBJECTS_ACCESS_KEY is not set');
@@ -26,11 +26,19 @@ console.log('DreamObjects configuration:', {
   region: REGION
 });
 
+export interface ExifResult {
+  buffer: Buffer;
+  hadExif: boolean;
+  cleaned: boolean;
+  timestampTaken?: string;
+}
+
 export interface UploadedImage {
   url: string;
   alt: string;
   width: number;
   height: number;
+  timestampTaken?: string;
 }
 
 function hmac(key: Buffer | string, string: string): Buffer {
@@ -110,11 +118,12 @@ class ExifCleaningError extends Error {
   }
 }
 
-interface ExifResult {
-  buffer: Buffer;
-  hadExif: boolean;
-  cleaned: boolean;
-}
+
+
+import exifr from 'exifr';
+import piexif from 'piexifjs';
+import extractPngChunks from 'png-chunks-extract';
+import encodePngChunks from 'png-chunks-encode';
 
 async function processExifData(buffer: ArrayBuffer): Promise<ExifResult> {
   try {
@@ -122,12 +131,26 @@ async function processExifData(buffer: ArrayBuffer): Promise<ExifResult> {
     const inputBuffer = Buffer.from(buffer);
     
     let hasExifData = false;
+    let timestampTaken: string | undefined = undefined;
+
     // Parse and check for EXIF data
     try {
-      const exifData = exifCleaner.parse(inputBuffer);
-      if (Object.keys(exifData).length > 0) {
+      // Use exifr to extract DateTimeOriginal/CreateDate and detect EXIF
+      const exifParsed = await exifr.parse(inputBuffer, { translateValues: false });
+      if (exifParsed && (Object.keys(exifParsed).length > 0)) {
         hasExifData = true;
-        console.log('EXIF data found:', exifData);
+        // Try to get timestamp
+        if (exifParsed.DateTimeOriginal || exifParsed.CreateDate) {
+          const ts = exifParsed.DateTimeOriginal || exifParsed.CreateDate;
+          if (ts instanceof Date) {
+            timestampTaken = ts.toISOString();
+          } else if (typeof ts === 'string') {
+            // Try to parse string to ISO
+            const d = new Date(ts);
+            if (!isNaN(d.getTime())) timestampTaken = d.toISOString();
+          }
+        }
+        console.log('EXIF data found:', exifParsed, 'Timestamp:', timestampTaken);
       } else {
         console.log('No EXIF data found in image');
         return { buffer: inputBuffer, hadExif: false, cleaned: false };
@@ -136,13 +159,38 @@ async function processExifData(buffer: ArrayBuffer): Promise<ExifResult> {
       console.log('No EXIF data found or error parsing:', exifError instanceof Error ? exifError.message : exifError);
       return { buffer: inputBuffer, hadExif: false, cleaned: false };
     }
-    
-    // If we found EXIF data, try to clean it
+    // If we found EXIF data, try to clean it (JPEG or PNG)
     if (hasExifData) {
       try {
-        const cleanedBuffer = await exifCleaner.clean(inputBuffer);
-        console.log('EXIF data cleaned successfully');
-        return { buffer: cleanedBuffer, hadExif: true, cleaned: true };
+        const isJpeg = inputBuffer[0] === 0xFF && inputBuffer[1] === 0xD8;
+        const isPng = inputBuffer[0] === 0x89 && inputBuffer[1] === 0x50 && inputBuffer[2] === 0x4E && inputBuffer[3] === 0x47;
+        if (isJpeg) {
+          // JPEG: use piexifjs
+          const mimeType = 'image/jpeg';
+          const base64String = inputBuffer.toString('base64');
+          const dataUrl = `data:${mimeType};base64,${base64String}`;
+          const strippedDataUrl = piexif.remove(dataUrl);
+          const cleanedBase64 = strippedDataUrl.split(',')[1];
+          const cleanedBuffer = Buffer.from(cleanedBase64, 'base64');
+          
+          console.log('EXIF data cleaned successfully (JPEG)');
+          return { buffer: cleanedBuffer, hadExif: true, cleaned: true, timestampTaken };
+        } else if (isPng) {
+          // PNG: use png-chunks-extract/encode to remove metadata chunks
+          const chunks = extractPngChunks(inputBuffer);
+          const filtered = chunks.filter(chunk => {
+            const type = chunk.name;
+            // Remove all metadata chunks: tEXt, iTXt, zTXt, eXIf
+            return !['tEXt', 'iTXt', 'zTXt', 'eXIf'].includes(type);
+          });
+          const cleanedBuffer = Buffer.from(encodePngChunks(filtered));
+          
+          console.log('Metadata cleaned successfully (PNG)');
+          return { buffer: cleanedBuffer, hadExif: true, cleaned: true, timestampTaken };
+        } else {
+          // For other formats, just return the original
+          return { buffer: inputBuffer, hadExif: true, cleaned: false, timestampTaken };
+        }
       } catch (cleanError) {
         console.error('Failed to clean EXIF data:', cleanError instanceof Error ? cleanError.message : cleanError);
         throw new ExifCleaningError('Found EXIF data but failed to clean it. For privacy reasons, the upload has been cancelled.');
@@ -178,7 +226,7 @@ export async function uploadImage(file: File): Promise<UploadedImage> {
     const dateStamp = amzDate.slice(0, 8);
 
     // Process EXIF data
-    const { buffer: processedBuffer, hadExif, cleaned } = await processExifData(buffer);
+    const { buffer: processedBuffer, hadExif, cleaned, timestampTaken } = await processExifData(buffer);
     if (hadExif) {
       console.log('Image had EXIF data and was', cleaned ? 'cleaned successfully' : 'not cleaned');
     }
@@ -260,6 +308,7 @@ export async function uploadImage(file: File): Promise<UploadedImage> {
         alt: filename.split('.')[0],
         width: 1200,
         height: 800,
+        timestampTaken,
       };
     } catch (uploadError) {
       console.error('Upload error:', {

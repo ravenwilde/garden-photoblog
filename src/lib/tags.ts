@@ -9,21 +9,18 @@ export interface Tag {
 export async function createTag(name: string): Promise<Tag> {
   const supabase = await createClient(true); // Use service role key for admin operations
 
-  const { data: newTag, error } = await supabase
+  const { data: newTags, error } = await supabase
     .from('tags')
-    .upsert([{ 
-      name
-    }], { 
-      onConflict: 'name',
-      ignoreDuplicates: true 
-    })
-    .select()
-    .single();
+    .upsert([{ name }], { onConflict: 'name', ignoreDuplicates: true })
+    .select();
 
   if (error) {
     console.error('Error creating tag:', error);
     throw error;
   }
+
+  // newTags may be an array or a single object depending on Supabase version/config
+  const newTag = Array.isArray(newTags) ? newTags.find(tag => tag.name === name) : newTags;
 
   if (!newTag) {
     throw new Error('Failed to create tag');

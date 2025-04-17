@@ -18,6 +18,25 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
   const [images, setImages] = useState<ImageType[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
+  // Date field state (datetime-local value)
+  const [date, setDate] = useState(() => {
+    // Format as yyyy-MM-dd'T'HH:mm for datetime-local
+    const now = new Date();
+    return now.toISOString().slice(0, 16);
+  });
+
+  // When images are uploaded, if first image has timestampTaken, use it
+  const handleImagesUploaded = (newImages: ImageType[]) => {
+    setImages(prev => [...prev, ...newImages]);
+    if (newImages.length > 0 && newImages[0].timestampTaken) {
+      // Convert ISO to yyyy-MM-dd'T'HH:mm for input
+      const iso = newImages[0].timestampTaken;
+      const local = new Date(iso);
+      // Pad to 16 chars for datetime-local (no seconds)
+      const formatted = local.toISOString().slice(0, 16);
+      setDate(formatted);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,11 +44,12 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
       title,
       description,
       notes: notes || undefined,
-      date: format(new Date(), 'yyyy-MM-dd'),
+      date: date ? date : format(new Date(), 'yyyy-MM-dd'),
       images,
       tags,
     });
   };
+
 
   const handleTagKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -66,6 +86,20 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
         />
       </div>
 
+      {/* Date field */}
+      <div>
+        <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          Date
+        </label>
+        <input
+          type="datetime-local"
+          id="date"
+          value={date}
+          onChange={e => setDate(e.target.value)}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
+        />
+      </div>
+
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Description
@@ -97,7 +131,7 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Images
         </label>
-        <ImageUpload onImagesUploaded={(newImages) => setImages([...images, ...newImages])} />
+        <ImageUpload onImagesUploaded={handleImagesUploaded} />
         
         {images.length > 0 && (
           <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">

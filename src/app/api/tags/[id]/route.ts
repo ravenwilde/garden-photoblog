@@ -5,7 +5,7 @@ import { getServerSession } from '@/lib/server-auth';
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const sessionData = await getServerSession();
 
@@ -24,7 +24,7 @@ export async function PUT(
       return new NextResponse('Name is required', { status: 400 });
     }
 
-    const { id } = context.params;
+    const { id } = await context.params;
     const updatedTag = await updateTag(id, name);
     return NextResponse.json(updatedTag);
   } catch (error) {
@@ -37,9 +37,9 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
   const sessionData = await getServerSession();
 
   if (!sessionData || !sessionData.user?.email) {
