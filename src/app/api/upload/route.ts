@@ -52,7 +52,8 @@ export async function POST(request: NextRequest) {
     try {
       const result = await uploadImage(file);
       console.log('Upload successful:', result);
-      return NextResponse.json(result);
+      // Ensure timestampTaken is included in the response
+      return NextResponse.json({ ...result, timestampTaken: result.timestampTaken });
     } catch (uploadError) {
       console.error('DreamObjects upload error:', uploadError);
       return NextResponse.json(

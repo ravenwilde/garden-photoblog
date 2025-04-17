@@ -4,6 +4,7 @@ export interface Image {
   alt?: string;
   width: number;
   height: number;
+  timestampTaken?: string;
 }
 
 export interface Post {
