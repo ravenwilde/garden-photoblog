@@ -1,0 +1,48 @@
+name: Apply Supabase Migrations
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'supabase/migrations/**'
+  pull_request:
+    paths:
+      - 'supabase/migrations/**'
+
+jobs:
+  migrate-prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Apply pending migrations to production
+        env:
+          PROD_DB_URL: ${{ secrets.SUPABASE_PROD_DB_URL }}
+        run: |
+          for file in $(ls supabase/migrations/*.sql | sort); do
+            echo "Applying $file"
+            psql "$PROD_DB_URL" -v ON_ERROR_STOP=1 -f "$file"
+          done
+
+  migrate-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Apply pending migrations to preview
+        env:
+          PREVIEW_DB_URL: ${{ secrets.SUPABASE_PREVIEW_DB_URL }}
+        run: |
+          for file in $(ls supabase/migrations/*.sql | sort); do
+            echo "Applying $file"
+            psql "$PREVIEW_DB_URL" -v ON_ERROR_STOP=1 -f "$file"
+          done
