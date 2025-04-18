@@ -46,3 +46,33 @@ jobs:
             echo "Applying $file"
             psql "$PREVIEW_DB_URL" -v ON_ERROR_STOP=1 -f "$file"
           done
+
+  archive-migrations:
+    if: github.ref == 'refs/heads/main'
+    needs: migrate-prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Make archive script executable
+        run: chmod +x scripts/archive-applied-migrations.sh
+
+      - name: Archive applied migrations
+        run: ./scripts/archive-applied-migrations.sh
+
+      - name: Commit and push archived migrations
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add supabase/migrations/archived/*
+          git add supabase/migrations/*.sql -u
+          if git diff --cached --quiet; then
+            echo "No migrations to archive."
+            exit 0
+          fi
+          git commit -m "chore: archive applied migrations [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

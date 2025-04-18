@@ -2,6 +2,52 @@
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -41,6 +87,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -82,6 +174,52 @@ A beautiful and modern photo blog application built with Next.js, Tailwind CSS, 
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -121,6 +259,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -162,6 +346,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -201,6 +431,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -242,6 +518,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -281,6 +603,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - 🌓 Dark mode support with smooth transitions
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -322,6 +690,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -361,6 +775,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - 🔒 Secure admin authentication
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -402,6 +862,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -441,6 +947,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - 📝 Simple post creation and management
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -482,6 +1034,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -522,6 +1120,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -561,6 +1205,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -602,6 +1292,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -641,6 +1377,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -682,6 +1464,52 @@ See our [CHANGELOG](CHANGELOG.md) for a detailed history of changes.
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -721,6 +1549,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -762,6 +1636,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -801,6 +1721,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -842,6 +1808,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -881,6 +1893,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -921,6 +1979,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 ```bash
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -962,6 +2066,52 @@ git clone <repository-url>
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1001,6 +2151,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 cd garden-photoblog
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1042,6 +2238,52 @@ npm install
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1082,6 +2324,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1121,6 +2409,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1162,6 +2496,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1201,6 +2581,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1241,6 +2667,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 ```bash
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1282,6 +2754,52 @@ cp .env.example .env.local
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1322,6 +2840,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1361,6 +2925,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1402,6 +3012,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1441,6 +3097,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1481,6 +3183,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 ```env
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1522,6 +3270,52 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1561,6 +3355,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1602,6 +3442,52 @@ NEXT_PUBLIC_ADMIN_EMAIL=your_admin_email
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1641,6 +3527,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 NEXT_PUBLIC_S3_ENDPOINT=your_s3_endpoint
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1682,6 +3614,52 @@ NEXT_PUBLIC_S3_BUCKET=your_s3_bucket
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1721,6 +3699,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 NEXT_PUBLIC_S3_ACCESS_KEY_ID=your_s3_access_key_id
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1762,6 +3786,52 @@ NEXT_PUBLIC_S3_SECRET_ACCESS_KEY=your_s3_secret_access_key
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1802,6 +3872,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1841,6 +3957,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1882,6 +4044,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -1921,6 +4129,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -1962,6 +4216,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2001,6 +4301,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 npm run dev
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2042,6 +4388,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2081,6 +4473,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2122,6 +4560,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2161,6 +4645,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2202,6 +4732,52 @@ This project is configured for deployment on Vercel. Follow these steps to deplo
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2241,6 +4817,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2282,6 +4904,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2321,6 +4989,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2362,6 +5076,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2401,6 +5161,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2442,6 +5248,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2481,6 +5333,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
    - `NEXT_PUBLIC_SUPABASE_URL`
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2522,6 +5420,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2561,6 +5505,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
    - `NEXT_PUBLIC_ADMIN_EMAIL`
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2602,6 +5592,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2641,6 +5677,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
    - `NEXT_PUBLIC_S3_BUCKET`
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2682,6 +5764,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2722,6 +5850,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2761,6 +5935,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2802,6 +6022,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2841,6 +6107,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2882,6 +6194,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -2921,6 +6279,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -2962,6 +6366,52 @@ To use a custom domain:
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3001,6 +6451,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3042,6 +6538,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3081,6 +6623,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 2. Navigate to the 'Domains' section
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3122,6 +6710,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3161,6 +6795,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 npm install
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3202,6 +6882,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3241,6 +6967,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3282,6 +7054,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3321,6 +7139,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3362,6 +7226,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3401,6 +7311,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3442,6 +7398,52 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3481,6 +7483,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 NEXT_PUBLIC_ADMIN_EMAIL=your-admin-email
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3522,6 +7570,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3561,6 +7655,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3602,6 +7742,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3641,6 +7827,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3682,6 +7914,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3721,6 +7999,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 npm run dev
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3762,6 +8086,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3801,6 +8171,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3842,6 +8258,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3881,6 +8343,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -3922,6 +8430,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -3961,6 +8515,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4002,6 +8602,52 @@ The blog uses a single admin user system. To access admin features:
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4041,6 +8687,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4082,6 +8774,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4121,6 +8859,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 2. Sign in with your admin credentials
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4162,6 +8946,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4201,6 +9031,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
    - Post creation at `/new`
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4242,6 +9118,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4282,6 +9204,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4321,6 +9289,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4362,6 +9376,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4401,6 +9461,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4442,6 +9548,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4481,6 +9633,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4522,6 +9720,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4561,6 +9805,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - **Database**: [Supabase](https://supabase.com)
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4602,6 +9892,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4642,6 +9978,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4681,6 +10063,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4722,6 +10150,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4761,6 +10235,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4802,6 +10322,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4841,6 +10407,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Server components for better performance
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4882,6 +10494,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -4921,6 +10579,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Responsive images with next/image
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -4962,6 +10666,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5001,6 +10751,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5042,6 +10838,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5081,6 +10923,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5122,6 +11010,52 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5161,6 +11095,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5202,6 +11182,52 @@ Make sure to add your environment variables in the Vercel dashboard.
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5241,6 +11267,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5282,6 +11354,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5321,6 +11439,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5362,6 +11526,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5401,6 +11611,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5442,6 +11698,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5481,6 +11783,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5522,6 +11870,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5561,6 +11955,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Decide what changes you need (tables, columns, constraints, etc.).
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5602,6 +12042,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5641,6 +12127,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5682,6 +12214,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5721,6 +12299,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Create a new SQL file in `supabase/migrations/`, e.g. `supabase/migrations/YYYYMMDD_your_change.sql`.
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5762,6 +12386,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5801,6 +12471,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5842,6 +12558,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5882,6 +12644,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -5921,6 +12729,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
   ```sh
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -5962,6 +12816,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6001,6 +12901,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
   ```
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6042,6 +12988,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6081,6 +13073,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
   ```sh
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6122,6 +13160,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6162,6 +13246,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6201,6 +13331,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6242,6 +13418,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6281,6 +13503,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Verify the schema changes work as expected in the preview/dev environment.
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6322,6 +13590,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6361,6 +13675,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6402,6 +13762,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6441,6 +13847,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 ```sh
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6482,6 +13934,52 @@ git add supabase/migrations/YYYYMMDD_your_change.sql
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6521,6 +14019,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 git commit -m "Add migration for <describe your change>"
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6562,6 +14106,52 @@ git push origin <your-feature-branch>
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6602,6 +14192,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6641,6 +14277,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6682,6 +14364,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6721,6 +14449,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Open a PR from your feature branch to `main`.
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6762,6 +14536,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6801,6 +14621,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6842,6 +14708,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6881,6 +14793,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Once approved and tested, merge the PR into `main`.
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -6922,6 +14880,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -6961,6 +14965,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7002,6 +15052,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7042,6 +15138,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7081,6 +15223,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
   ```sh
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7122,6 +15310,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7161,6 +15395,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
   ```
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7202,6 +15482,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7241,6 +15567,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
   ```sh
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7282,6 +15654,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7322,6 +15740,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7362,6 +15826,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7401,6 +15911,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 ### Best Practices
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7442,6 +15998,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7481,6 +16083,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Always use migration files and version control.
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7522,6 +16170,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7561,6 +16255,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 - Keep credentials secure and never commit them to your repo.
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7602,6 +16342,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Automated Supabase Migration Workflow (CI/CD)
 
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
+
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
 ### How It Works
@@ -7641,6 +16427,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
@@ -7681,6 +16513,52 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 ---
 
 ## Automated Supabase Migration Workflow (CI/CD)
+
+This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
+
+### How It Works
+- **On every Pull Request (PR):**
+  - All migration files in `supabase/migrations/` are automatically applied to the preview/dev Supabase database.
+  - This ensures your PR is tested against the latest schema changes before merging.
+- **On every push to `main`:**
+  - All migration files are applied to the production Supabase database.
+  - **After successful production deployment, a GitHub Actions job will automatically move all applied `.sql` migration files from `supabase/migrations/` to `supabase/migrations/archived/` and commit the changes back to `main`.**
+  - This keeps the migrations folder clean and ensures migrations are version-controlled and archived without manual intervention.
+
+### Secrets Setup
+- Add your database connection strings as GitHub Actions secrets:
+  - `SUPABASE_PREVIEW_DB_URL` – for the preview/dev database
+  - `SUPABASE_PROD_DB_URL` – for the production database
+
+### Workflow File
+- The automation is defined in `.github/workflows/supabase-migrate.yml`.
+- It uses the PostgreSQL client to apply migrations in order, stopping on errors.
+- Archiving is handled by `scripts/archive-applied-migrations.sh`, which is run automatically by the workflow after production migrations succeed.
+
+### Example Workflow Steps
+1. **On PR (preview):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to preview DB using `$SUPABASE_PREVIEW_DB_URL`
+2. **On main (production):**
+    - Checks out code
+    - Installs PostgreSQL client
+    - Applies migrations to production DB using `$SUPABASE_PROD_DB_URL`
+    - Runs the archive script to move applied migrations to `archived/` and commits the changes
+
+### Developer Workflow
+- Add new migration files to `supabase/migrations/` as needed.
+- Open a PR to test migrations in preview/dev.
+- Merge to `main` to deploy to production.
+- **You do not need to manually move or delete migration files after deployment—this is now fully automated!**
+
+### Best Practices
+- Always test migrations in preview/dev (via PR) before merging to main.
+- Never edit production schema directly in the Supabase UI—always use migrations.
+- Keep secrets secure in GitHub and do not commit them to your repo.
+
+For full implementation details, see `.github/workflows/supabase-migrate.yml` and `scripts/archive-applied-migrations.sh` in this repository.
+
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases.
 
