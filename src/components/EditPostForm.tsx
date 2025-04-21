@@ -118,7 +118,7 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
         value={formData.tags}
         onChange={tags => setFormData({ ...formData, tags })}
         label="Tags"
-        placeholder="Add tags (press Enter, comma, or click to select)"
+        placeholder="Add a tag"
       />
 
       <div className="flex justify-end gap-4">

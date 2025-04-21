@@ -15,7 +15,7 @@ export default function TagInput({
   value,
   onChange,
   label = "Tags",
-  placeholder = "Add tags (press Enter or comma to add)",
+  placeholder = "Add a tag",
   className = "",
   disabled = false,
 }: TagInputProps) {
@@ -96,12 +96,13 @@ export default function TagInput({
       <div className="relative mt-1">
         <input
           id="tag-input"
+          data-testid="tag-input"
           ref={inputRef}
           type="text"
           value={input}
           onChange={handleInput}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder="Add a tag"
           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
           disabled={disabled}
           autoComplete="off"
