@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import ImageUpload from './ImageUpload';
+import TagInput from './TagInput';
 import type { NewPost, Image as ImageType } from '@/types';
 
 interface PostFormProps {
@@ -17,7 +18,6 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
   const [notes, setNotes] = useState('');
   const [images, setImages] = useState<ImageType[]>([]);
   const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState('');
   // Date field state (datetime-local value)
   const [date, setDate] = useState(() => {
     // Format as yyyy-MM-dd'T'HH:mm for datetime-local
@@ -51,20 +51,7 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
   };
 
 
-  const handleTagKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const newTag = tagInput.trim().toLowerCase();
-      if (newTag && !tags.includes(newTag)) {
-        setTags([...tags, newTag]);
-      }
-      setTagInput('');
-    }
-  };
 
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
 
   const removeImage = (indexToRemove: number) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
@@ -99,6 +86,14 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
         />
       </div>
+
+      {/* Tag input */}
+      <TagInput
+        value={tags}
+        onChange={setTags}
+        label="Tags"
+        placeholder="Add tags (press Enter, comma, or click to select)"
+      />
 
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -159,42 +154,7 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
         )}
       </div>
 
-      <div>
-        <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Tags
-        </label>
-        <input
-          type="text"
-          id="tags"
-          value={tagInput}
-          onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={handleTagKeyDown}
-          placeholder="Add tags (press Enter or comma to add)"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
-        />
-        
-        {tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center px-2 py-1 rounded-full text-sm bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100"
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => removeTag(tag)}
-                  className="ml-1 hover:text-emerald-600 dark:hover:text-emerald-400"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
+
 
       <div className="flex justify-end">
         <button
