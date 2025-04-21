@@ -1,5 +1,30 @@
 # Garden Photo Blog
 
+## Environment Variables
+
+This project requires several environment variables for Supabase, S3/DreamObjects, and admin configuration. These must be set in your Vercel project settings and/or as GitHub Actions secrets for CI/CD and local development.
+
+| Variable Name                   | Description                                              | Public?   |
+|---------------------------------|----------------------------------------------------------|-----------|
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL (public API endpoint)               | Yes       |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public API key (browser-safe)              | Yes       |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role/admin API key (server only)        | No        |
+| `SUPABASE_DATABASE_PASSWORD`    | Supabase database password (for migrations/CI, server)   | No        |
+| `DREAMOBJECTS_ACCESS_KEY`       | S3/DreamObjects access key (server only)                 | No        |
+| `DREAMOBJECTS_SECRET_KEY`       | S3/DreamObjects secret key (server only)                 | No        |
+| `DREAMOBJECTS_BUCKET_NAME`      | S3/DreamObjects bucket name                              | No        |
+| `NEXT_PUBLIC_ADMIN_EMAIL`       | Email address for admin access (browser-safe)            | Yes       |
+
+- **Public** variables (with `NEXT_PUBLIC_` prefix) are exposed to browser-side JavaScript and should not contain secrets.
+- **Secret** variables (no `NEXT_PUBLIC_` prefix) must never be exposed to the client and should only be available server-side.
+
+### Setting Environment Variables
+- **Vercel:** Add all variables above in your Vercel project dashboard under Settings → Environment Variables. Set for both Production and Preview environments as needed.
+- **GitHub Actions:** Add all secret variables used for migrations and deploys as repository secrets under Settings → Secrets and variables → Actions.
+- **Local Development:** Copy these variables into your `.env.local` file (do not commit this file).
+
+---
+
 ## Automated Supabase Migration Workflow (CI/CD)
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
