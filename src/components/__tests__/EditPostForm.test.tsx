@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-function createFetchResponse(data: any) {
+function createFetchResponse(data: unknown) {
   return {
     ok: true,
     status: 200,

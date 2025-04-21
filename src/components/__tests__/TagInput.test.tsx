@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import TagInput from '../TagInput';
 
-function createFetchResponse(data: any) {
+function createFetchResponse(data: unknown) {
   return {
     ok: true,
     status: 200,

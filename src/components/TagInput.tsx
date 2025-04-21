@@ -15,7 +15,6 @@ export default function TagInput({
   value,
   onChange,
   label = "Tags",
-  placeholder = "Add a tag",
   className = "",
   disabled = false,
 }: TagInputProps) {
@@ -33,8 +32,14 @@ export default function TagInput({
         if (!res.ok) throw new Error("Failed to fetch tags");
         const data = await res.json();
         // Accept both [{name: string}] and [string] formats
-        setAllTags(Array.isArray(data) && typeof data[0] === "string" ? data : data.map((t: any) => t.name));
-      } catch (e) {
+        if (Array.isArray(data) && typeof data[0] === "string") {
+          setAllTags(data);
+        } else if (Array.isArray(data) && typeof data[0] === "object" && 'name' in data[0]) {
+          setAllTags((data as { name: string }[]).map((t) => t.name));
+        } else {
+          setAllTags([]);
+        }
+      } catch {
         setAllTags([]);
       }
     };
@@ -43,7 +48,7 @@ export default function TagInput({
 
   useEffect(() => {
     // Filter suggestions based on input and already selected tags
-    let filtered = allTags.filter(
+    const filtered = allTags.filter(
       (tag) =>
         !value.includes(tag) &&
         (!input || tag.toLowerCase().includes(input.trim().toLowerCase()))
