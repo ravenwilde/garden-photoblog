@@ -5,6 +5,9 @@ import userEvent from '@testing-library/user-event';
 jest.mock('@/lib/csrf-client', () => ({
   getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
 }));
+jest.mock('@/lib/resizeAndCompressImage', () => ({
+  resizeAndCompressImage: jest.fn((file, opts) => Promise.resolve(file))
+}));
 
 import ImageUpload from '../ImageUpload';
 
@@ -27,13 +30,31 @@ describe('ImageUpload', () => {
         alt: 'test.png'
       })
     });
-    
     // Mock URL.createObjectURL
     Object.defineProperty(global, 'URL', {
       value: {
         createObjectURL: jest.fn(() => 'mock-url'),
         revokeObjectURL: jest.fn(),
       },
+    });
+  });
+
+  it('calls resizeAndCompressImage with correct options before upload', async () => {
+    const { resizeAndCompressImage } = require('@/lib/resizeAndCompressImage');
+    const file = new File(['test'], 'test.png', { type: 'image/png' });
+    render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
+    const input = screen.getByTestId('file-input') as HTMLInputElement;
+    await userEvent.upload(input, file);
+    await waitFor(() => {
+      expect(resizeAndCompressImage).toHaveBeenCalledWith(
+        file,
+        expect.objectContaining({
+          maxWidth: 1600,
+          maxHeight: 1000,
+          quality: 0.8,
+          type: 'image/jpeg',
+        })
+      );
     });
   });
 
@@ -44,7 +65,6 @@ describe('ImageUpload', () => {
 
   it('renders upload area', () => {
     render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
-    
     expect(screen.getByText(/drag and drop your images here/i)).toBeInTheDocument();
     expect(screen.getByText(/browse/i)).toBeInTheDocument();
     expect(screen.getByText(/maximum file size: 10mb/i)).toBeInTheDocument();
@@ -52,21 +72,16 @@ describe('ImageUpload', () => {
 
   it('handles file selection through browse button', async () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
-    
     render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
-    
     const input = screen.getByTestId('file-input') as HTMLInputElement;
     await userEvent.upload(input, file);
-    
     expect(input.files?.[0]).toBe(file);
   });
 
   it('handles drag and drop', async () => {
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
-    
     const dropzone = screen.getByTestId('dropzone');
-    
     // Simulate drag events
     fireEvent.dragEnter(dropzone, {
       dataTransfer: {
@@ -74,21 +89,18 @@ describe('ImageUpload', () => {
         types: ['Files']
       }
     });
-    
     fireEvent.dragOver(dropzone, {
       dataTransfer: {
         files: [file],
         types: ['Files']
       }
     });
-    
     fireEvent.drop(dropzone, {
       dataTransfer: {
         files: [file],
         types: ['Files']
       }
     });
-    
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith('/api/upload', {
         method: 'POST',
@@ -97,22 +109,21 @@ describe('ImageUpload', () => {
         },
         body: expect.any(FormData)
       });
-      expect(mockOnImagesUploaded).toHaveBeenCalledWith([{
-        id: 'test-id',
-        url: 'https://example.com/test.png',
-        alt: 'test.png'
-      }]);
+      expect(mockOnImagesUploaded).toHaveBeenCalledWith([
+        {
+          id: 'test-id',
+          url: 'https://example.com/test.png',
+          alt: 'test.png'
+        }
+      ]);
     }, { timeout: 1000 });
   });
 
   it('validates file type', async () => {
     const invalidFile = new File(['test'], 'test.txt', { type: 'text/plain' });
-    
     render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
-    
     const input = screen.getByTestId('file-input') as HTMLInputElement;
     fireEvent.change(input, { target: { files: [invalidFile] } });
-    
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith('Invalid file type:', 'text/plain');
       expect(global.fetch).not.toHaveBeenCalled();
@@ -123,15 +134,13 @@ describe('ImageUpload', () => {
     // Create a file larger than 10MB
     const tenMBInBytes = 10 * 1024 * 1024;
     const largeFile = new File(['x'.repeat(tenMBInBytes + 1)], 'large.png', { type: 'image/png' });
-    
     render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
-    
     const input = screen.getByTestId('file-input') as HTMLInputElement;
     fireEvent.change(input, { target: { files: [largeFile] } });
-    
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith('File too large:', largeFile.size);
       expect(global.fetch).not.toHaveBeenCalled();
     }, { timeout: 1000 });
   });
 });
+

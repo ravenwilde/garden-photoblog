@@ -81,19 +81,34 @@ export async function createPost(post: NewPost): Promise<Post> {
       height: number;
     };
 
-    const imageData: ImageInsertData[] = post.images.map((image: Image) => ({
-      post_id: newPost.id,
-      url: image.url,
-      alt: image.alt || '',
-      width: image.width,
-      height: image.height
-    }));
+    // Ensure all fields are present and of correct type
+    const imageData: ImageInsertData[] = post.images.map((image: Image, idx) => {
+      const img = {
+        post_id: newPost.id,
+        url: String(image.url),
+        alt: image.alt ? String(image.alt) : '',
+        width: Number(image.width),
+        height: Number(image.height)
+      };
+      // Extra debug log for each image
+      if (!img.url || !img.post_id || isNaN(img.width) || isNaN(img.height)) {
+        console.error(`Invalid image at index ${idx}:`, img, image);
+      }
+      return img;
+    });
 
-    const { error: imageError } = await supabase
+    console.log('insert_images payload:', JSON.stringify(imageData, null, 2));
+
+    const { error: imageError, data: imageResult } = await supabase
       .rpc('insert_images', { image_data: imageData });
     if (imageError) {
       console.error('Error inserting images:', imageError);
+      if (imageError.details) console.error('Supabase error details:', imageError.details);
+      if (imageError.hint) console.error('Supabase error hint:', imageError.hint);
+      if (imageError.message) console.error('Supabase error message:', imageError.message);
       throw imageError;
+    } else {
+      console.log('insert_images result:', imageResult);
     }
   }
 
