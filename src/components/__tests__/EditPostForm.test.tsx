@@ -1,6 +1,16 @@
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+function createFetchResponse(data: unknown) {
+  return {
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve(data),
+    text: () => Promise.resolve(JSON.stringify(data)),
+    // add other Response methods/properties as needed
+  } as Response;
+}
+
 // Mock modules before imports
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -18,6 +28,11 @@ import EditPostForm from '../EditPostForm';
 // Mock fetch
 global.fetch = jest.fn();
 
+// Mock window.alert to avoid not implemented error
+beforeAll(() => {
+  window.alert = jest.fn();
+});
+
 describe('EditPostForm', () => {
   const mockPost = {
     id: '123',
@@ -32,8 +47,22 @@ describe('EditPostForm', () => {
   };
 
   beforeEach(() => {
+    global.fetch = jest.fn((url) => {
+      if (url === '/api/tags') {
+        return Promise.resolve(createFetchResponse([{ name: 'test' }, { name: 'garden' }]));
+      }
+      return Promise.resolve(createFetchResponse({}));
+    });
     jest.clearAllMocks();
     (global.fetch as jest.Mock).mockReset();
+    // Default fetch mock for /api/tags
+    (global.fetch as jest.Mock).mockImplementation((url) => {
+      if (typeof url === 'string' && url.includes('/api/tags')) {
+        return Promise.resolve(createFetchResponse([{ name: 'test' }, { name: 'garden' }]));
+      }
+      // fallback for other fetches
+      return Promise.resolve(createFetchResponse({}));
+    });
   });
 
   it('renders form with post data', () => {
@@ -60,7 +89,7 @@ describe('EditPostForm', () => {
       onSuccess: jest.fn(),
     };
     render(<EditPostForm {...mockProps} />);
-    const tagInput = screen.getByPlaceholderText(/add a tag/i);
+    const tagInput = await screen.findByPlaceholderText(/add a tag/i);
 
     // Add tag with Enter key
     await userEvent.type(tagInput, 'newtag{enter}');
@@ -135,12 +164,27 @@ describe('EditPostForm', () => {
       onSuccess: jest.fn(),
     };
     const errorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: false,
-      json: () => Promise.resolve({ error: 'Failed to update post' })
+    // Robust fetch mock: return tags for /api/tags, error for PUT
+    (global.fetch as jest.Mock).mockImplementation((url, options) => {
+      if (typeof url === 'string' && url.includes('/api/tags')) {
+        return Promise.resolve(createFetchResponse([{ name: 'test' }, { name: 'garden' }]));
+      }
+      if (
+        typeof url === 'string' &&
+        url.includes('/api/posts/') &&
+        options &&
+        options.method === 'PUT'
+      ) {
+        return Promise.reject(new Error('Network error'));
+      }
+      // Default: return a generic successful fetch for any other request
+      return Promise.resolve(createFetchResponse({}));
     });
 
     render(<EditPostForm {...mockProps} />);
+
+await waitFor(() => expect(screen.getByTestId('tag-input')).toBeInTheDocument());
+
     fireEvent.submit(screen.getByRole('form'));
 
     await waitFor(() => {
@@ -158,13 +202,27 @@ describe('EditPostForm', () => {
     };
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
-    
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: false,
-      json: () => Promise.resolve({ error: 'Update failed' }),
+    // Robust fetch mock: return tags for /api/tags, error for PUT
+    (global.fetch as jest.Mock).mockImplementation((url, options) => {
+      if (typeof url === 'string' && url.includes('/api/tags')) {
+        return Promise.resolve(createFetchResponse([{ name: 'test' }, { name: 'garden' }]));
+      }
+      if (
+        typeof url === 'string' &&
+        url.includes('/api/posts/') &&
+        options &&
+        options.method === 'PUT'
+      ) {
+        return Promise.reject(new Error('Network error'));
+      }
+      // Default: return a generic successful fetch for any other request
+      return Promise.resolve(createFetchResponse({}));
     });
 
     render(<EditPostForm {...mockProps} />);
+
+await waitFor(() => expect(screen.getByTestId('tag-input')).toBeInTheDocument());
+
     fireEvent.submit(screen.getByRole('form'));
 
     await waitFor(() => {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 // import { format, parseISO } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import TagInput from './TagInput';
 import type { Post } from '@/types';
 import { getCsrfToken } from '@/lib/csrf-client';
 
@@ -21,27 +22,7 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
     notes: post.notes || '',
     tags: post.tags || []
   });
-  const [tagInput, setTagInput] = useState('');
 
-  const handleTagKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const newTag = tagInput.trim().toLowerCase();
-      if (newTag && !formData.tags.includes(newTag)) {
-        setFormData({ ...formData, tags: [...formData.tags, newTag] });
-      }
-      setTagInput('');
-    }
-  };
-
-  const removeTag = async (tagToRemove: string) => {
-    const newTags = formData.tags.filter(tag => tag !== tagToRemove);
-    await Promise.resolve(); // Ensure state update is handled asynchronously
-    setFormData({
-      ...formData,
-      tags: newTags
-    });
-  };
   useRouter(); // Keep router initialized for future use
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,44 +113,13 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
         />
       </div>
 
-      <div>
-        <label htmlFor="tag-input" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Tags
-        </label>
-        <div className="mt-1">
-          <input
-            id="tag-input"
-            type="text"
-            placeholder="Add a tag"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={handleTagKeyDown}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
-          />
-        </div>
-        {formData.tags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {formData.tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center px-2 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-100"
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={async () => await removeTag(tag)}
-                  className="ml-1 hover:text-indigo-600 dark:hover:text-indigo-400"
-                  aria-label="remove tag"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Tag input */}
+      <TagInput
+        value={formData.tags}
+        onChange={tags => setFormData({ ...formData, tags })}
+        label="Tags"
+        placeholder="Add a tag"
+      />
 
       <div className="flex justify-end gap-4">
         <button
