@@ -51,7 +51,7 @@ describe('ImageUpload', () => {
         expect.objectContaining({
           maxWidth: 1600,
           maxHeight: 1000,
-          quality: 0.8,
+          quality: 1,
           type: 'image/jpeg',
         })
       );
