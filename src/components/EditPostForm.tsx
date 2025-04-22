@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import TagInput from './TagInput';
 import type { Post, Image as ImageType } from '@/types';
 import { getCsrfToken } from '@/lib/csrf-client';

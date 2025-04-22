@@ -121,7 +121,7 @@ export async function PUT(
           const path = parsed.pathname;
           // Remove leading slash if present
           return path.startsWith('/') ? path.slice(1) : path;
-        } catch (e) {
+        } catch {
           // If not a valid URL, fallback to legacy extraction
           const urlParts = url.split('/');
           if (urlParts.length >= 2) {
