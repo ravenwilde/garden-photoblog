@@ -22,6 +22,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 's3.us-east-005.dream.io',
+        pathname: '/images/**',
+      },
+      {
+        protocol: 'https',
         hostname: '*.supabase.co',
         pathname: '/**',
       },
