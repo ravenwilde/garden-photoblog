@@ -57,7 +57,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
         const { file: processedFile, timestampTaken } = await resizeAndCompressImage(file, {
           maxWidth: 1600,
           maxHeight: 1000,
-          quality: 0.8,
+          quality: 1,
           type: 'image/jpeg',
         });
 
