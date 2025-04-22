@@ -6,6 +6,7 @@ jest.mock('@/lib/csrf-client', () => ({
   getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
 }));
 jest.mock('@/lib/resizeAndCompressImage', () => ({
+  resizeAndCompressImage: jest.fn((file) => Promise.resolve(file))
   resizeAndCompressImage: jest.fn((file, opts) => Promise.resolve(file))
 }));
 

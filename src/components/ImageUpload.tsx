@@ -25,7 +25,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     // Validate files
-    const validFiles = Array.from(files).filter(file => {
+    const validFiles = Array.from(files).filter((file) => {
       // Check if file is an image
       if (!file.type.startsWith('image/')) {
         console.error('Invalid file type:', file.type);

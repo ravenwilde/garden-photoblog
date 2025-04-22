@@ -78,9 +78,9 @@ export async function resizeAndCompressImage(
         quality
       );
     };
-    img.onerror = (e) => {
+    img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(e);
+      reject(new Error('Image failed to load'));
     };
     img.src = url;
   });
