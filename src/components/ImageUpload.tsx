@@ -51,7 +51,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
     const uploadedImages: ImageType[] = [];
 
     for (let i = 0; i < validFiles.length; i++) {
-      let file = validFiles[i];
+      const file = validFiles[i];
       try {
         // Resize/compress before upload and extract timestamp
         const { file: processedFile, timestampTaken } = await resizeAndCompressImage(file, {

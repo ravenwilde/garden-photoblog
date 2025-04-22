@@ -6,10 +6,11 @@ jest.mock('@/lib/csrf-client', () => ({
   getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
 }));
 jest.mock('@/lib/resizeAndCompressImage', () => ({
-  resizeAndCompressImage: jest.fn((file, opts?) => Promise.resolve(file))
+  resizeAndCompressImage: jest.fn((file) => Promise.resolve(file))
 }));
 
 import ImageUpload from '../ImageUpload';
+import { resizeAndCompressImage } from '@/lib/resizeAndCompressImage';
 
 describe('ImageUpload', () => {
   const mockOnImagesUploaded = jest.fn();
@@ -40,7 +41,6 @@ describe('ImageUpload', () => {
   });
 
   it('calls resizeAndCompressImage with correct options before upload', async () => {
-    const { resizeAndCompressImage } = require('@/lib/resizeAndCompressImage');
     const file = new File(['test'], 'test.png', { type: 'image/png' });
     render(<ImageUpload onImagesUploaded={mockOnImagesUploaded} />);
     const input = screen.getByTestId('file-input') as HTMLInputElement;

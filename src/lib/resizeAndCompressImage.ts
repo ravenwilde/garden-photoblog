@@ -38,6 +38,7 @@ export async function resizeAndCompressImage(
     }
   } catch (e) {
     // Ignore EXIF parse errors, continue without timestamp
+    console.error('Failed to parse EXIF data:', e);
   }
 
   return new Promise((resolve, reject) => {
