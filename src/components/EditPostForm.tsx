@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-// import { format, parseISO } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import TagInput from './TagInput';
-import type { Post } from '@/types';
+import type { Post, Image as ImageType } from '@/types';
 import { getCsrfToken } from '@/lib/csrf-client';
+import ImageUpload from './ImageUpload';
 
 interface EditPostFormProps {
   post: Post;
@@ -23,7 +23,25 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
     tags: post.tags || []
   });
 
-  useRouter(); // Keep router initialized for future use
+  // Image management state
+  const [existingImages, setExistingImages] = useState<ImageType[]>(post.images || []);
+  const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<ImageType[]>([]); // These are local image objects (after upload)
+
+  useRouter();
+
+  // Remove image handler
+  const handleRemoveImage = (img: ImageType) => {
+    if (img.id) {
+      setImagesToRemove(prev => [...prev, img.id!]);
+      setExistingImages(prev => prev.filter(i => i.id !== img.id));
+    }
+  };
+
+  // Add new images handler
+  const handleImagesUploaded = (uploaded: ImageType[]) => {
+    setNewImages(prev => [...prev, ...uploaded]);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +55,11 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
           'Content-Type': 'application/json',
           'x-csrf-token': token
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          imagesToRemove,
+          newImages,
+        }),
       });
 
       const data = await response.json();
@@ -58,18 +80,53 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4" role="form">
+      {/* Images Section */}
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Title
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+          Images
         </label>
-        <input
-          type="text"
-          id="title"
-          value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
-          required
-        />
+        {/* Existing images grid */}
+        {existingImages.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+            {existingImages.map(img => (
+              <div key={img.id || img.url} className="relative group border rounded overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
+                  alt={img.alt || ''}
+                  className="object-cover w-full h-32"
+                />
+                <button
+                  type="button"
+                  title="Remove image"
+                  onClick={() => handleRemoveImage(img)}
+                  className="absolute top-1 right-1 bg-white/80 hover:bg-red-500 hover:text-white rounded-full p-1 text-sm shadow"
+                >
+                  <span aria-hidden>🗑️</span>
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-xs text-gray-500 mb-2">No images attached to this post.</div>
+        )}
+        {/* New image upload */}
+        <ImageUpload onImagesUploaded={handleImagesUploaded} />
+        {/* Show newly added images (pre-uploaded) */}
+        {newImages.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+            {newImages.map((img, idx) => (
+              <div key={img.url + idx} className="relative border rounded overflow-hidden opacity-70">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
+                  alt={img.alt || ''}
+                  className="object-cover w-full h-32"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div>

@@ -38,6 +38,7 @@ export interface Database {
           alt: string;
           width: number;
           height: number;
+          timestamp_taken: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -48,6 +49,7 @@ export interface Database {
           alt: string;
           width: number;
           height: number;
+          timestamp_taken?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -58,6 +60,7 @@ export interface Database {
           alt?: string;
           width?: number;
           height?: number;
+          timestamp_taken?: string | null;
           created_at?: string;
           updated_at?: string;
         };
