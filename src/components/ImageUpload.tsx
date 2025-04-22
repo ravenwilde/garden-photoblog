@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
+import { resizeAndCompressImage } from '@/lib/resizeAndCompressImage';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import ImagePreview from './ImagePreview';
 import type { Image as ImageType } from '@/types';
@@ -24,7 +25,7 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
 
   const handleFiles = useCallback(async (files: FileList | File[]) => {
     // Validate files
-    const newFiles = Array.from(files).filter(file => {
+    const validFiles = Array.from(files).filter((file) => {
       // Check if file is an image
       if (!file.type.startsWith('image/')) {
         console.error('Invalid file type:', file.type);
@@ -38,23 +39,31 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
       return true;
     });
 
-    if (newFiles.length === 0) return;
+    if (validFiles.length === 0) return;
 
-    // Add files to uploading state
+    // Add files to uploading state (before compression)
     setUploadingFiles(prev => [
       ...prev,
-      ...newFiles.map(file => ({ file, progress: 0 }))
+      ...validFiles.map(file => ({ file, progress: 0 }))
     ]);
 
-    // Upload each file
+    // Upload each file (after resizing/compression)
     const uploadedImages: ImageType[] = [];
 
-    for (let i = 0; i < newFiles.length; i++) {
-      const file = newFiles[i];
-      const formData = new FormData();
-      formData.append('file', file);
-
+    for (let i = 0; i < validFiles.length; i++) {
+      const file = validFiles[i];
       try {
+        // Resize/compress before upload and extract timestamp
+        const { file: processedFile, timestampTaken } = await resizeAndCompressImage(file, {
+          maxWidth: 1600,
+          maxHeight: 1000,
+          quality: 0.8,
+          type: 'image/jpeg',
+        });
+
+        const formData = new FormData();
+        formData.append('file', processedFile);
+
         console.log('Uploading file:', {
           name: file.name,
           type: file.type,
@@ -72,10 +81,10 @@ export default function ImageUpload({ onImagesUploaded }: ImageUploadProps) {
 
         const data = await response.json();
 
-        // Ensure timestampTaken is included in uploadedImages
+        // Prefer the timestamp from EXIF if available, else fallback to server response
         const imageWithTimestamp = {
           ...data,
-          timestampTaken: data.timestampTaken,
+          timestampTaken: timestampTaken || data.timestampTaken,
         };
 
         if (!response.ok) {
