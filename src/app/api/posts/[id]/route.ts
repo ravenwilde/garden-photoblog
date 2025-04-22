@@ -134,14 +134,19 @@ export async function PUT(
     // Add new images
     if (Array.isArray(newImages) && newImages.length > 0) {
       // Insert each new image (assume already uploaded, just add DB row)
-      const imagesToInsert = newImages.map((img: Image) => ({
-        url: img.url,
-        alt: img.alt || '',
-        width: img.width,
-        height: img.height,
-        timestamp_taken: img.timestampTaken || null,
-        post_id: id,
-      }));
+      const imagesToInsert = newImages.map((img: Image) => {
+        const base = {
+          url: img.url,
+          alt: img.alt || '',
+          width: img.width,
+          height: img.height,
+          post_id: id,
+        };
+        if (img.timestampTaken && typeof img.timestampTaken === 'string') {
+          return { ...base, timestamp_taken: img.timestampTaken };
+        }
+        return base; // timestamp_taken omitted if not present
+      });
       const { error: insertImgErr } = await supabase.from('images').insert(imagesToInsert);
       if (insertImgErr) {
         console.error('Error inserting new images:', insertImgErr);
