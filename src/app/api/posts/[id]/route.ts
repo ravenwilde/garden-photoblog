@@ -110,16 +110,34 @@ export async function PUT(
         return NextResponse.json({ error: fetchImgErr.message }, { status: 500 });
       }
       // Delete from S3 and DB
-      for (const img of imagesForDelete) {
-        // Extract S3 key from URL (assuming /bucket/key)
-        const urlParts = img.url.split('/');
-        const key = urlParts.slice(-2).join('/'); // e.g., images/12345-filename.jpg
+      // Helper to extract S3 key from URL
+      function extractS3KeyFromUrl(url: string): string {
         try {
+          const parsed = new URL(url);
+          // Find the path after the bucket name (e.g., /images/12345-filename.jpg)
+          // Assumes the key is everything after the last '/' before the filename
+          // e.g., https://bucketname.region.digitaloceanspaces.com/images/12345-filename.jpg
+          // returns 'images/12345-filename.jpg'
+          const path = parsed.pathname;
+          // Remove leading slash if present
+          return path.startsWith('/') ? path.slice(1) : path;
+        } catch (e) {
+          // If not a valid URL, fallback to legacy extraction
+          const urlParts = url.split('/');
+          if (urlParts.length >= 2) {
+            return urlParts.slice(-2).join('/');
+          }
+          throw new Error('Could not extract S3 key from image URL: ' + url);
+        }
+      }
+
+      for (const img of imagesForDelete) {
+        try {
+          const key = extractS3KeyFromUrl(img.url);
           await deleteImageFromDreamObjects(key);
         } catch (err) {
-          console.error('Error deleting from S3:', err);
-          // Continue to DB delete
-        }
+          console.error('Error deleting from S3 or extracting key:', err);
+        }  // Continue to DB delete
       }
       // Delete from DB
       const { error: dbDeleteErr } = await supabase

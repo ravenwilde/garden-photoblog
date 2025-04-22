@@ -28,7 +28,7 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
   const [imagesToRemove, setImagesToRemove] = useState<string[]>([]);
   const [newImages, setNewImages] = useState<ImageType[]>([]); // These are local image objects (after upload)
 
-  useRouter();
+
 
   // Remove image handler
   const handleRemoveImage = (img: ImageType) => {
