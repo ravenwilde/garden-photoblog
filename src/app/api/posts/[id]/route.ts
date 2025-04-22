@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { Image } from '@/types';
 import type { NextRequest } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
@@ -133,7 +134,7 @@ export async function PUT(
     // Add new images
     if (Array.isArray(newImages) && newImages.length > 0) {
       // Insert each new image (assume already uploaded, just add DB row)
-      const imagesToInsert = newImages.map((img: any) => ({
+      const imagesToInsert = newImages.map((img: Image) => ({
         url: img.url,
         alt: img.alt || '',
         width: img.width,
