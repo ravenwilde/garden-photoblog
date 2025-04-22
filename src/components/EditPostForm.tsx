@@ -130,6 +130,20 @@ export default function EditPostForm({ post, onClose, onSuccess }: EditPostFormP
       </div>
 
       <div>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+          Title
+        </label>
+        <input
+          id="title"
+          type="text"
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+          required
+        />
+      </div>
+
+      <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           Description
         </label>

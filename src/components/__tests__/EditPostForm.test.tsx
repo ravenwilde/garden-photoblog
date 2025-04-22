@@ -150,6 +150,8 @@ describe('EditPostForm', () => {
           date: mockPost.date,
           notes: mockPost.notes,
           tags: mockPost.tags,
+          imagesToRemove: [],
+          newImages: []
         }),
       });
       expect(mockProps.onSuccess).toHaveBeenCalled();
