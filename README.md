@@ -369,6 +369,27 @@ For full implementation details, see `.github/workflows/supabase-migrate.yml` in
 
 ## Features
 
+- 📸 **Secure and Smart Image Uploads**: Images are resized and compressed client-side, with EXIF data parsed to extract the original timestamp (if available) and all personally identifying EXIF metadata (such as geolocation) stripped before upload.
+- 🕒 **Consistent Timestamps and Schema**: The database schema includes an `updated_at` column for images, and all image insertions use the `insert_images` stored procedure and the `image_insert_data` custom type for robust timestamp management and type safety. This ensures schema cache consistency between preview and production environments.
+- 🗂️ **Type-Safe Image Handling**: The upload API leverages the new Supabase function for all image insertions, enforcing correct types and consistent timestamp handling.
+
+---
+
+## Image Uploads
+
+Image uploads are handled through a drag-and-drop interface. When an image is selected:
+
+1. The image is resized and compressed in the browser for optimal storage and performance.
+2. EXIF metadata is parsed to extract the original timestamp (if present), which is used to set the `timestampTaken` field for the image. All other EXIF data, including geolocation, is stripped for privacy.
+3. The upload API calls a Supabase stored procedure (`insert_images`) using the custom `image_insert_data` type, which ensures:
+   - The `updated_at` column is set correctly.
+   - Type safety and schema cache consistency between preview and production databases.
+4. Images are stored in AWS S3 (DreamObjects), and references are saved in the Supabase database.
+
+**Note:** These changes were made to resolve schema cache issues and improve the privacy and reliability of image uploads. See the migrations in `supabase/migrations/` for implementation details.
+
+---
+
 ## Automated Supabase Migration Workflow (CI/CD)
 
 This project uses **GitHub Actions** to automate applying Supabase schema migrations to both preview (dev) and production databases, and to automatically archive applied migrations.
