@@ -3,9 +3,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isRateLimited } from './lib/rate-limiter';
 import { verifyToken, getTokenFromHeaders } from './lib/csrf';
+import { middleware as cspMiddleware } from './app/csp-middleware';
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
+  // Apply CSP middleware first
+  const res = cspMiddleware();
 
   // Skip middleware for Supabase auth endpoints
   if (req.nextUrl.pathname.startsWith('/auth/')) {

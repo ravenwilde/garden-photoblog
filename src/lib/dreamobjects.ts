@@ -26,6 +26,70 @@ console.log('DreamObjects configuration:', {
   region: REGION
 });
 
+/**
+ * Deletes an image from DreamObjects (S3-compatible) storage.
+ * @param key The S3 key of the image (e.g., 'images/12345-filename.jpg')
+ */
+export async function deleteImageFromDreamObjects(key: string): Promise<void> {
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:\-]|\.[0-9]{3}/g, '');
+  const dateStamp = amzDate.slice(0, 8);
+
+  const canonicalUri = `/${BUCKET_NAME}/${key}`;
+  const canonicalQueryString = '';
+  const canonicalHeaders = [
+    `host:s3.us-east-005.dream.io`,
+    `x-amz-content-sha256:UNSIGNED-PAYLOAD`,
+    `x-amz-date:${amzDate}`
+  ].join('\n') + '\n';
+  const signedHeaders = 'host;x-amz-content-sha256;x-amz-date';
+  const canonicalRequest = [
+    'DELETE',
+    canonicalUri,
+    canonicalQueryString,
+    canonicalHeaders,
+    signedHeaders,
+    'UNSIGNED-PAYLOAD'
+  ].join('\n');
+
+  const algorithm = 'AWS4-HMAC-SHA256';
+  const credentialScope = `${dateStamp}/${REGION}/${SERVICE}/aws4_request`;
+  const stringToSign = [
+    algorithm,
+    amzDate,
+    credentialScope,
+    hash(canonicalRequest)
+  ].join('\n');
+
+  const signingKey = getSignatureKey(SECRET_KEY, dateStamp, REGION, SERVICE);
+  const signature = crypto.createHmac('sha256', signingKey)
+    .update(stringToSign)
+    .digest('hex');
+
+  const authorizationHeader = [
+    `${algorithm} Credential=${ACCESS_KEY}/${credentialScope}`,
+    `SignedHeaders=${signedHeaders}`,
+    `Signature=${signature}`
+  ].join(', ');
+
+  const url = `${ENDPOINT}/${BUCKET_NAME}/${key}`;
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Host': 's3.us-east-005.dream.io',
+      'x-amz-date': amzDate,
+      'x-amz-content-sha256': 'UNSIGNED-PAYLOAD',
+      'Authorization': authorizationHeader
+    }
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to delete image from DreamObjects: ${res.status} ${res.statusText} - ${text}`);
+  }
+}
+
 export interface ExifResult {
   buffer: Buffer;
   hadExif: boolean;
@@ -117,8 +181,6 @@ class ExifCleaningError extends Error {
     this.name = 'ExifCleaningError';
   }
 }
-
-
 
 import exifr from 'exifr';
 import piexif from 'piexifjs';
