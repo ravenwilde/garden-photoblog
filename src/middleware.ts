@@ -7,7 +7,7 @@ import { middleware as cspMiddleware } from './app/csp-middleware';
 
 export async function middleware(req: NextRequest) {
   // Apply CSP middleware first
-  let res = cspMiddleware(req);
+  const res = cspMiddleware();
 
   // Skip middleware for Supabase auth endpoints
   if (req.nextUrl.pathname.startsWith('/auth/')) {
