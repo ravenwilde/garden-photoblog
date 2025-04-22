@@ -165,6 +165,7 @@ export async function PUT(
         }
         return base; // timestamp_taken omitted if not present
       });
+      console.log('DEBUG: imagesToInsert payload:', JSON.stringify(imagesToInsert, null, 2));
       const { error: insertImgErr } = await supabase.from('images').insert(imagesToInsert);
       if (insertImgErr) {
         console.error('Error inserting new images:', insertImgErr);
