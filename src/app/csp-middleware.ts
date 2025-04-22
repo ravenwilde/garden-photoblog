@@ -1,7 +1,6 @@
 // This file sets a Content Security Policy header for all responses in development and production.
 // It allows images to load from your custom S3 domain and other trusted sources.
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
 export function middleware() {
   const res = NextResponse.next();
