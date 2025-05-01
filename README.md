@@ -57,17 +57,31 @@ A beautiful and modern photo blog application built with Next.js 15, TypeScript,
 
 ## Environment Variables
 
-This project requires several environment variables for Supabase, S3/DreamObjects, and admin configuration.
+This project requires several environment variables for Supabase, DreamObjects, and admin configuration.
+
+### DreamObjects Configuration
+
+| Variable Name                   | Description                                              | Public?   |
+|---------------------------------|----------------------------------------------------------|-----------|
+| `DREAMOBJECTS_ACCESS_KEY`       | DreamObjects S3-compatible access key                    | No        |
+| `DREAMOBJECTS_SECRET_KEY`       | DreamObjects S3-compatible secret key                    | No        |
+| `DREAMOBJECTS_BUCKET_NAME`      | DreamObjects bucket name for image storage               | No        |
+
+### Supabase Configuration
 
 | Variable Name                   | Description                                              | Public?   |
 |---------------------------------|----------------------------------------------------------|-----------|
 | `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL                                     | Yes       |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public API key                             | Yes       |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role/admin API key                      | No        |
-| `SUPABASE_DATABASE_PASSWORD`    | Supabase database password                               | No        |
-| `DREAMOBJECTS_ACCESS_KEY`       | S3/DreamObjects access key                               | No        |
-| `DREAMOBJECTS_SECRET_KEY`       | S3/DreamObjects secret key                               | No        |
-| `DREAMOBJECTS_BUCKET_NAME`      | S3/DreamObjects bucket name                              | No        |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase service role key for admin operations           | No        |
+| `SUPABASE_DATABASE_PASSWORD`    | Supabase database password for development environment   | No        |
+| `SUPABASE_PREVIEW_DB_URL`       | Full PostgreSQL connection string for preview database   | No        |
+| `SUPABASE_DATABASE_PROD_PASSWORD` | Supabase database password for production environment  | No        |
+
+### Admin Configuration
+
+| Variable Name                   | Description                                              | Public?   |
+|---------------------------------|----------------------------------------------------------|-----------|
 | `NEXT_PUBLIC_ADMIN_EMAIL`       | Email address for admin access                           | Yes       |
 
 - **Public** variables (with `NEXT_PUBLIC_` prefix) are exposed to browser-side JavaScript.
