@@ -171,7 +171,7 @@ The application features a robust image upload system:
 
 This project uses a hosted Supabase instance for both development and production:
 
-- **Database URL:** yykxljpswqdjjbnurbwt.supabase.co
+- **Database URL:** **********.supabase.co
 - **Development Workflow:**
   - Database changes are managed through SQL migrations in `/supabase/migrations/`
   - Migrations are applied through Supabase Dashboard's SQL Editor
@@ -179,7 +179,7 @@ This project uses a hosted Supabase instance for both development and production
 
 ### Environment Configuration
 
-- **Production database:** supabase-garden-blog-prod
+- **Production database:** ********-prod
 - **Configuration hierarchy:**
   - Vercel environment variables (highest priority, used in production)
   - .env.production (used for production builds)
