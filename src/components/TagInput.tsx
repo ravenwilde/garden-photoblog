@@ -9,14 +9,17 @@ interface TagInputProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  showAddButton?: boolean;
 }
 
 export default function TagInput({
   value,
   onChange,
   label = "Tags",
+  placeholder = "Add a tag",
   className = "",
   disabled = false,
+  showAddButton = true, // Default to showing the add button for mobile users
 }: TagInputProps) {
   const [input, setInput] = useState("");
   const [allTags, setAllTags] = useState<string[]>([]);
@@ -99,28 +102,46 @@ export default function TagInput({
         </label>
       )}
       <div className="relative mt-1">
-        <input
-          id="tag-input"
-          data-testid="tag-input"
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={handleInput}
-          onKeyDown={handleKeyDown}
-          placeholder="Add a tag"
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
-          disabled={disabled}
-          autoComplete="off"
-          onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-          onFocus={() => setShowSuggestions(true)}
-        />
+        <div className="flex">
+          <input
+            id="tag-input"
+            data-testid="tag-input"
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={handleInput}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            className="block w-full rounded-l-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
+            disabled={disabled}
+            autoComplete="off"
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+            onFocus={() => setShowSuggestions(true)}
+          />
+          {showAddButton && (
+            <button
+              type="button"
+              onClick={() => input.trim() && addTag(input)}
+              disabled={!input.trim() || disabled}
+              className="px-3 py-2 bg-emerald-500 text-white rounded-r-md hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Add tag"
+            >
+              Add
+            </button>
+          )}
+        </div>
         {showSuggestions && suggestions.length > 0 && (
-          <ul className="absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg">
+          <ul 
+            className="absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg"
+            role="listbox"
+            aria-label="Tag suggestions">
             {suggestions.map((tag) => (
               <li
                 key={tag}
                 className="cursor-pointer px-3 py-2 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-sm"
                 onMouseDown={() => handleSuggestionClick(tag)}
+                role="option"
+                aria-selected="false"
               >
                 {tag}
               </li>
