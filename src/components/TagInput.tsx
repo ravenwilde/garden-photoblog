@@ -82,7 +82,7 @@ export default function TagInput({
       setSuggestions(filtered);
       setActiveSuggestionIndex(-1);
     }, 150),
-    []
+    [setSuggestions, setActiveSuggestionIndex] // Include state setters as dependencies for clarity
   );
 
   useEffect(() => {
