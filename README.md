@@ -16642,3 +16642,36 @@ This project uses **GitHub Actions** to automate applying Supabase schema migrat
 
 For full implementation details, see `.github/workflows/supabase-migrate.yml` in this repository.
 
+## Development Tools
+
+### Pre-commit Hooks (2025-04-30)
+
+This project uses pre-commit hooks to maintain code quality and catch issues before they're committed to the repository. The hooks are implemented using Husky and lint-staged.
+
+#### Features
+
+- **Automatic Linting**: All JavaScript, TypeScript, JSX, and TSX files are automatically linted with ESLint before each commit
+- **Code Formatting**: Prettier is used to ensure consistent code formatting across the project
+- **Error Prevention**: Prevents commits with linting errors, helping maintain code quality
+
+#### Setup
+
+The pre-commit hooks are automatically installed when you run `npm install`. No additional setup is required.
+
+#### Configuration Files
+
+- `.husky/pre-commit`: The pre-commit hook script that runs lint-staged
+- `.eslintrc.json`: ESLint configuration with Prettier integration
+- `.prettierrc`: Prettier configuration for code formatting
+- `.prettierignore`: Files and directories excluded from Prettier formatting
+- `package.json`: Contains the lint-staged configuration
+
+#### Manual Checks
+
+You can manually run the pre-commit checks with:
+
+```bash
+npx lint-staged
+```
+
+This is useful for testing changes before attempting to commit them.
