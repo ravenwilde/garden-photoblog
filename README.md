@@ -1,3 +1,12 @@
+<!-- 
+DOCUMENTATION MANAGEMENT REMINDER:
+- Update existing sections rather than adding duplicate content
+- Verify environment variables match those in .env.example
+- Keep this README concise and well-structured
+- At the end of each session, update the CHANGELOG.md with new entries
+- For full documentation guidelines, ask Cascade to "Review the documentation according to our documentation management prompt"
+-->
+
 # Garden Photo Blog
 
 A beautiful and modern photo blog application built with Next.js 15, TypeScript, Tailwind CSS, and Supabase. Features a responsive design, dark mode support, and admin-only content management.
