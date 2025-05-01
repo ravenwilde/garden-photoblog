@@ -1,5 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import EditPostForm from '../EditPostForm';
+
+// Mock the getCsrfToken function
+jest.mock('@/lib/csrf-client', () => ({
+  getCsrfToken: jest.fn().mockResolvedValue('mock-csrf-token')
+}));
 
 function createFetchResponse(data: unknown) {
   return {
@@ -25,6 +30,7 @@ const mockPost = {
 
 
 beforeEach(() => {
+  jest.clearAllMocks();
   global.fetch = jest.fn((url) => {
     if (url === '/api/tags') {
       return Promise.resolve(createFetchResponse([{ name: 'test' }, { name: 'garden' }]));
@@ -35,14 +41,16 @@ beforeEach(() => {
 
 describe('EditPostForm minimal', () => {
   it('renders EditPostForm and TagInput', async () => {
-    render(
-      <EditPostForm
-        post={mockPost}
-        onClose={() => {}}
-        onSuccess={() => {}}
-      />
-    );
+    await act(async () => {
+      render(
+        <EditPostForm
+          post={mockPost}
+          onClose={() => {}}
+          onSuccess={() => {}}
+        />
+      );
+    });
     
-    await waitFor(() => expect(screen.getByTestId('tag-input')).toBeInTheDocument());
+    expect(screen.getByTestId('tag-input')).toBeInTheDocument();
   });
 });
