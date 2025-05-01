@@ -168,7 +168,12 @@ export default function TagInput({
         <div className="flex">
           <div className="relative flex-grow">
             {isLoading && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10">
+              <div
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10"
+                role="status"
+                aria-live="polite"
+                aria-label="Loading"
+              >
                 <div className="animate-spin h-4 w-4 border-2 border-emerald-500 rounded-full border-t-transparent"></div>
               </div>
             )}
