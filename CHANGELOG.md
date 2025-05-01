@@ -126,7 +126,6 @@ All notable changes to the Garden Photo Blog project will be documented in this 
 ### Added
 - Added featured post component with sorting by timestamp
 - Added image preview with drag-and-drop support
-- Enhanced sign-in UI with dark mode support
 
 ### Changed
 - Reorganized auth routes for better security
