@@ -1,7 +1,6 @@
 import './setup';
 import { GET, POST, PUT, DELETE } from '../posts/route';
 import { createMockRequest, parseResponse } from './test-utils';
-import { setupSupabaseMocks } from './mocks/supabase';
 import * as postsLib from '@/lib/posts';
 import * as serverAuth from '@/lib/server-auth';
 

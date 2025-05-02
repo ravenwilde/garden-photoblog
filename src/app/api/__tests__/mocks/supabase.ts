@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+// Supabase mocking
 
 // Mock the Supabase client
 jest.mock('@supabase/supabase-js', () => ({
@@ -58,14 +58,14 @@ export const mockSupabaseClient = {
  */
 export function setupSupabaseMocks(responses: {
   auth?: {
-    getSession?: any;
-    getUser?: any;
+    getSession?: Record<string, unknown>;
+    getUser?: Record<string, unknown>;
   };
   data?: {
-    [table: string]: any[];
+    [table: string]: Record<string, unknown>[];
   };
   errors?: {
-    [operation: string]: any;
+    [operation: string]: Error | null;
   };
 }) {
   // Reset all mocks

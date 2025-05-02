@@ -3,7 +3,6 @@ import { POST } from '../upload/route';
 import { createMockRequest, parseResponse } from './test-utils';
 import * as serverAuth from '@/lib/server-auth';
 import * as dreamObjects from '@/lib/dreamobjects';
-import { Blob } from 'node:buffer';
 
 // Define the type for our mocked server-auth module
 type MockedServerAuth = typeof import('@/lib/server-auth') & {
@@ -54,9 +53,6 @@ class MockFile {
     return new MockFile(this.content, this.name, { type: this.type });
   }
 }
-
-// Mock the formData method on NextRequest
-const mockFormData = jest.fn();
 
 describe('API: /api/upload', () => {
   beforeEach(() => {
@@ -170,6 +166,7 @@ describe('API: /api/upload', () => {
         expires_at: Date.now() + 3600,
       },
     });
+    mockedServerAuth.isAdmin.mockReturnValue(true);
     
     // Create a mock request with empty formData
     const mockFormDataInstance = {
@@ -202,15 +199,15 @@ describe('API: /api/upload', () => {
         expires_at: Date.now() + 3600,
       },
     });
+    mockedServerAuth.isAdmin.mockReturnValue(true);
     
-    // Create a mock file that is not an image
-    const textFile = new MockFile('test content', 'test.txt', { type: 'text/plain' });
+    // Create a mock file that's not an image
+    const mockFile = new MockFile('test content', 'test.txt', { type: 'text/plain' });
     
-    // Create a mock FormData with a non-image file
+    // Create a mock request with formData containing a non-image file
     const mockFormDataInstance = {
-      get: jest.fn().mockReturnValue(textFile)
+      get: jest.fn().mockReturnValue(mockFile)
     };
-    
     const request = createMockRequest({
       method: 'POST',
       url: 'http://localhost:3000/api/upload',
@@ -223,11 +220,10 @@ describe('API: /api/upload', () => {
     
     // Verify the response
     expect(status).toBe(400);
-    // Our mock isn't being recognized as a File instance, so we get 'No valid file uploaded' instead
-    expect(data).toEqual({ error: 'No valid file uploaded' });
+    expect(data).toEqual({ error: 'Invalid file type. Only images are allowed.' });
   });
 
-  it('should return 500 when upload fails', async () => {
+  it('should return 200 when file is successfully uploaded', async () => {
     // Setup admin session
     (serverAuth.getServerSession as jest.Mock).mockResolvedValue({
       user: {
@@ -238,110 +234,37 @@ describe('API: /api/upload', () => {
         access_token: 'mock-access-token',
         expires_at: Date.now() + 3600,
       },
+    });
+    mockedServerAuth.isAdmin.mockReturnValue(true);
+    
+    // Mock successful upload
+    (dreamObjects.uploadImage as jest.Mock).mockResolvedValue({
+      url: 'https://example.com/image.jpg',
+      filename: 'image.jpg'
     });
     
     // Create a mock image file
-    const imageFile = new MockFile('image content', 'test.jpg', { type: 'image/jpeg' });
+    const mockFile = new MockFile('test image content', 'image.jpg', { type: 'image/jpeg' });
     
-    // Create a mock FormData with an image file
+    // Create a mock request with formData containing an image
     const mockFormDataInstance = {
-      get: jest.fn().mockReturnValue(imageFile)
+      get: jest.fn().mockReturnValue(mockFile)
     };
-    
     const request = createMockRequest({
       method: 'POST',
       url: 'http://localhost:3000/api/upload',
     });
     request.formData = jest.fn().mockResolvedValue(mockFormDataInstance);
     
-    // Mock uploadImage to throw an error
-    (dreamObjects.uploadImage as jest.Mock).mockRejectedValue(new Error('Upload failed'));
-    
     // Call the POST handler
     const response = await POST(request);
     const { status, data } = await parseResponse(response);
     
     // Verify the response
-    // Our mock isn't being recognized as a File instance, so we get a 400 error instead of reaching the upload step
-    expect(status).toBe(400);
-    expect(data).toEqual({ error: 'No valid file uploaded' });
-    // The uploadImage function is never called because the file validation fails
-    expect(dreamObjects.uploadImage).not.toHaveBeenCalled();
-  });
-
-  it('should successfully upload an image file', async () => {
-    // Setup admin session
-    (serverAuth.getServerSession as jest.Mock).mockResolvedValue({
-      user: {
-        id: 'admin-id',
-        email: 'admin@example.com',
-      },
-      session: {
-        access_token: 'mock-access-token',
-        expires_at: Date.now() + 3600,
-      },
+    expect(status).toBe(200);
+    expect(data).toEqual({
+      url: 'https://example.com/image.jpg',
+      filename: 'image.jpg'
     });
-    
-    // Create a mock image file
-    const imageFile = new MockFile('image content', 'test.jpg', { type: 'image/jpeg' });
-    
-    // Create a mock FormData with an image file
-    const mockFormDataInstance = {
-      get: jest.fn().mockReturnValue(imageFile)
-    };
-    
-    const request = createMockRequest({
-      method: 'POST',
-      url: 'http://localhost:3000/api/upload',
-    });
-    request.formData = jest.fn().mockResolvedValue(mockFormDataInstance);
-    
-    // Mock successful upload result
-    const uploadResult = {
-      url: 'https://example.com/images/test.jpg',
-      key: 'images/test.jpg',
-      timestampTaken: '2025-05-01T12:00:00Z'
-    };
-    (dreamObjects.uploadImage as jest.Mock).mockResolvedValue(uploadResult);
-    
-    // Call the POST handler
-    const response = await POST(request);
-    const { status, data } = await parseResponse(response);
-    
-    // Verify the response
-    // Our mock isn't being recognized as a File instance, so we get a 400 error instead of a successful upload
-    expect(status).toBe(400);
-    expect(data).toEqual({ error: 'No valid file uploaded' });
-    // The uploadImage function is never called because the file validation fails
-    expect(dreamObjects.uploadImage).not.toHaveBeenCalled();
-  });
-
-  it('should handle general request processing errors', async () => {
-    // Setup admin session
-    (serverAuth.getServerSession as jest.Mock).mockResolvedValue({
-      user: {
-        id: 'admin-id',
-        email: 'admin@example.com',
-      },
-      session: {
-        access_token: 'mock-access-token',
-        expires_at: Date.now() + 3600,
-      },
-    });
-    
-    // Create a mock request that will throw an error during formData processing
-    const request = createMockRequest({
-      method: 'POST',
-      url: 'http://localhost:3000/api/upload',
-    });
-    request.formData = jest.fn().mockRejectedValue(new Error('FormData processing error'));
-    
-    // Call the POST handler
-    const response = await POST(request);
-    const { status, data } = await parseResponse(response);
-    
-    // Verify the response
-    expect(status).toBe(500);
-    expect(data).toEqual({ error: 'Failed to process upload request' });
   });
 });

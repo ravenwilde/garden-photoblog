@@ -9,7 +9,7 @@ export function createMockRequest(options: {
   method?: string;
   url?: string;
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   cookies?: Record<string, string>;
 }): NextRequest {
   const {
@@ -44,7 +44,7 @@ export function createMockRequest(options: {
   request.json = jest.fn().mockResolvedValue(body);
 
   // Mock cookies
-  const cookieObj: any = {};
+  const cookieObj: unknown = {};
   Object.entries(cookies).forEach(([key, value]) => {
     cookieObj[key] = value;
   });
@@ -68,7 +68,7 @@ export function createMockRequest(options: {
  */
 export async function parseResponse(response: NextResponse): Promise<{
   status: number;
-  data: any;
+  data: unknown;
   headers: Headers;
 }> {
   const status = response.status;
@@ -79,7 +79,7 @@ export async function parseResponse(response: NextResponse): Promise<{
   try {
     const text = await response.text();
     data = JSON.parse(text);
-  } catch (error) {
+  } catch {
     data = null;
   }
 

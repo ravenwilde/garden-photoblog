@@ -32,7 +32,7 @@ export function setupServerAuthMocks(config: {
       email: string;
       role?: string;
     } | null;
-    error?: any;
+    error?: Error;
   };
   isAdmin?: boolean;
 }) {

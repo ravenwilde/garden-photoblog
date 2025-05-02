@@ -7,8 +7,8 @@ if (!global.Request) {
     url: string;
     method: string;
     headers: Headers;
-    body: any;
-    json: () => Promise<any>;
+    body: unknown;
+    json: () => Promise<Record<string, unknown>>;
     text: () => Promise<string>;
     cookies: {
       getAll: () => Array<{name: string, value: string}>;
@@ -29,7 +29,7 @@ if (!global.Request) {
         has: jest.fn().mockReturnValue(false),
       };
     }
-  } as any;
+  } as unknown as typeof Request;
 }
 
 if (!global.Response) {
@@ -37,8 +37,8 @@ if (!global.Response) {
     status: number;
     statusText: string;
     headers: Headers;
-    body: any;
-    json: () => Promise<any>;
+    body: unknown;
+    json: () => Promise<Record<string, unknown>>;
     text: () => Promise<string>;
 
     constructor(body?: BodyInit | null, init?: ResponseInit) {
@@ -52,14 +52,14 @@ if (!global.Response) {
       this.json = jest.fn().mockImplementation(() => {
         try {
           return Promise.resolve(JSON.parse(bodyText || '{}'));
-        } catch (e) {
+        } catch {
           return Promise.resolve({});
         }
       });
       
       this.text = jest.fn().mockResolvedValue(bodyText || '');
     }
-  } as any;
+  } as unknown as typeof Request;
 }
 
 // Mock Next.js modules

@@ -1,6 +1,5 @@
 import './setup';
 import { GET } from '../csrf-token/route';
-import { parseResponse } from './test-utils';
 import { NextResponse } from 'next/server';
 
 // Mock crypto.randomBytes
@@ -16,17 +15,14 @@ describe('API: /api/csrf-token', () => {
   });
 
   it('should generate and return a CSRF token', async () => {
-    // Mock the cookies.set method
-    const mockSet = jest.fn();
+    // Mock NextResponse.json to return our mock response
     const mockResponse = {
       cookies: {
-        set: mockSet
+        set: jest.fn()
       },
       token: 'mock-csrf-token'
     };
-    
-    // Mock NextResponse.json to return our mock response
-    jest.spyOn(NextResponse, 'json').mockImplementation(() => mockResponse as any);
+    jest.spyOn(NextResponse, 'json').mockImplementation(() => mockResponse as unknown as ReturnType<typeof NextResponse.json>);
     
     // Call the GET handler
     const response = await GET();
@@ -35,7 +31,7 @@ describe('API: /api/csrf-token', () => {
     expect(response).toBe(mockResponse);
     
     // Verify the cookie was set
-    expect(mockSet).toHaveBeenCalledWith('csrf-token', 'mock-csrf-token', {
+    expect(mockResponse.cookies.set).toHaveBeenCalledWith('csrf-token', 'mock-csrf-token', {
       httpOnly: true,
       secure: false, // In test environment, NODE_ENV is not 'production'
       sameSite: 'strict',

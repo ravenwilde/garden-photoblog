@@ -18,7 +18,7 @@ import * as csrf from '@/lib/csrf';
  */
 export function setupCSRFMocks(config: {
   isValid?: boolean;
-  error?: any;
+  error?: Error;
 }) {
   // Reset mocks
   jest.clearAllMocks();
