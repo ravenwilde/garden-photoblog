@@ -12,6 +12,17 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
+## [1.3.2] - 2025-05-01
+
+### Testing
+- Implemented comprehensive tests for all API routes
+- Added tests for CSRF token generation route
+- Added tests for image upload functionality with various scenarios
+- Added tests for authentication routes (set-session and clear-session)
+- Enhanced error handling tests for posts and tags routes
+- Improved test coverage for API routes
+- Updated Jest configuration to properly handle mock files
+
 ## [1.3.1] - 2025-04-30
 
 ### Documentation

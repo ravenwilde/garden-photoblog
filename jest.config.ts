@@ -16,6 +16,14 @@ const config: Config = {
     '^@/lib/(.*)$': '<rootDir>/src/lib/$1',
     '^@/types$': '<rootDir>/src/types.ts',
   },
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/.next/',
+    '/mocks/'
+  ],
+  testMatch: [
+    '**/__tests__/**/*.test.[jt]s?(x)'
+  ],
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',

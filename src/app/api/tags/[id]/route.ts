@@ -21,7 +21,7 @@ export async function PUT(
   try {
     const { name } = await request.json();
     if (!name) {
-      return new NextResponse('Name is required', { status: 400 });
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
     const { id } = await context.params;
@@ -29,9 +29,9 @@ export async function PUT(
     return NextResponse.json(updatedTag);
   } catch (error) {
     if (error instanceof Error && error.message === 'A tag with this name already exists') {
-      return new NextResponse(error.message, { status: 409 });
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
-    return new NextResponse('Internal Server Error', { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -53,11 +53,11 @@ export async function DELETE(
 
   try {
     await deleteTag(id);
-    return new NextResponse(null, { status: 204 });
+    return NextResponse.json(null, { status: 204 });
   } catch (error) {
     if (error instanceof Error && error.message === 'Cannot delete tag that is still in use') {
-      return new NextResponse(error.message, { status: 409 });
+      return NextResponse.json({ error: error.message }, { status: 409 });
     }
-    return new NextResponse('Internal Server Error', { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

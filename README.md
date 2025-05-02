@@ -165,6 +165,33 @@ The application features a robust image upload system:
 3. Type-safe image handling using Supabase stored procedures
 4. Schema cache consistency between preview and production environments
 
+## Testing
+
+This project uses Jest for testing with comprehensive test coverage for API routes:
+
+### Testing Infrastructure
+
+- **Framework**: Jest with Next.js testing utilities
+- **Test Files**: Located in `src/app/api/__tests__/`
+- **Mocks**: Custom mocks for Supabase, authentication, and file uploads
+
+### API Route Tests
+
+- **Authentication Routes**: Tests for session management (`/api/auth/set-session`, `/api/auth/clear-session`)
+- **CSRF Protection**: Tests for CSRF token generation and validation
+- **Content Routes**: Tests for posts and tags CRUD operations
+- **Upload System**: Tests for image upload with various scenarios (auth, validation, errors)
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run specific tests
+npm test -- src/app/api/__tests__/upload.test.ts
+```
+
 ## Development Environment
 
 ### Database Configuration
