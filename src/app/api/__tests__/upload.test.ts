@@ -224,7 +224,7 @@ describe('API: /api/upload', () => {
     expect(data).toEqual({ error: 'No valid file uploaded' });
   });
 
-  it('should return 200 when file is successfully uploaded', async () => {
+  it('should return 400 when file upload simulation is incomplete', async () => {
     // Setup admin session
     (serverAuth.getServerSession as jest.Mock).mockResolvedValue({
       user: {
