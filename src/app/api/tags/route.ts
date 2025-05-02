@@ -4,8 +4,16 @@ import { getAllTags, createTag } from '@/lib/tags';
 import { getServerSession } from '@/lib/server-auth';
 
 export async function GET() {
-  const tags = await getAllTags();
-  return NextResponse.json(tags);
+  try {
+    const tags = await getAllTags();
+    return NextResponse.json(tags);
+  } catch (error) {
+    console.error('Failed to get tags:', error);
+    return NextResponse.json(
+      { error: 'Failed to get tags' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {
