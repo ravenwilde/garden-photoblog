@@ -33,6 +33,10 @@ export async function createTag(name: string): Promise<Tag> {
   };
 }
 
+/**
+ * Get all tags with post counts, filtering out tags with zero posts
+ * This is used for public-facing pages
+ */
 export async function getAllTags(): Promise<Tag[]> {
   const supabase = await createClient();
 
@@ -69,6 +73,43 @@ export async function getAllTags(): Promise<Tag[]> {
       // Filter out tags with zero posts
       .filter(tag => tag.post_count > 0)
   );
+}
+
+/**
+ * Get all tags with post counts, including tags with zero posts
+ * This is used for admin pages
+ */
+export async function getAllTagsAdmin(): Promise<Tag[]> {
+  const supabase = await createClient(true); // Use service role for admin operations
+
+  // Get all tags with post count
+  const { data: tags, error } = await supabase
+    .from('tags')
+    .select(
+      `
+      id,
+      name,
+      post_tags (
+        post_id
+      )
+    `
+    )
+    .order('name');
+
+  if (error) {
+    console.error('Error fetching all tags for admin:', error);
+    throw error;
+  }
+
+  if (!tags) {
+    return [];
+  }
+
+  return tags.map((tag: { id: string; name: string; post_tags?: Array<{ post_id: string }> }) => ({
+    id: tag.id,
+    name: tag.name,
+    post_count: tag.post_tags?.length || 0,
+  }));
 }
 
 /**
