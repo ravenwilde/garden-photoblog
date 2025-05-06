@@ -23,8 +23,8 @@ export default function PostCard({ post }: PostCardProps) {
   const router = useRouter();
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-      <div className="relative h-64 bg-gray-100 dark:bg-gray-700">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 h-full flex flex-col">
+      <div className="relative h-52 bg-gray-100 dark:bg-gray-800">
         <div
           className={`relative w-full h-full ${post.images?.[0]?.url ? 'cursor-pointer' : ''}`}
           onClick={() => post.images?.[0]?.url && setIsModalOpen(true)}
@@ -34,8 +34,8 @@ export default function PostCard({ post }: PostCardProps) {
               src={post.images[0].url}
               alt={post.images[0].alt || 'Garden photo'}
               fill
-              className="object-cover hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover hover:opacity-90 transition-opacity duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
               loading="lazy"
               quality={85}
               placeholder="blur"
@@ -53,21 +53,21 @@ export default function PostCard({ post }: PostCardProps) {
           </div>
         )}
       </div>
-      
-      <div className="p-4 relative">
-        <div className="flex items-center justify-between mb-2">
+
+      <div className="p-4 relative flex-grow flex flex-col">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1 font-sans">
               {post.title}
             </h2>
             {isAdmin && (
-              <div className="flex items-center gap-1">
+              <div className="flex items-center">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="p-1 text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
+                  className="p-0.5 text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
                   title="Edit post"
                 >
-                  <PencilSquareIcon className="h-5 w-5" />
+                  <PencilSquareIcon className="h-4 w-4" />
                 </button>
                 <button
                   onClick={async () => {
@@ -89,36 +89,36 @@ export default function PostCard({ post }: PostCardProps) {
                     }
                   }}
                   disabled={isDeleting}
-                  className="p-1 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
+                  className="p-0.5 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
                   title="Delete post"
                 >
-                  <TrashIcon className="h-5 w-5" />
+                  <TrashIcon className="h-4 w-4" />
                 </button>
               </div>
             )}
           </div>
-          <time className="text-sm text-gray-500 dark:text-gray-400">
+          <time className="text-xs text-gray-500 dark:text-gray-400 font-mono">
             {format(parseISO(post.date), 'MMM d, yyyy')}
           </time>
         </div>
-        
-        <p className="text-gray-600 dark:text-gray-300 mb-3">
+
+        <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm line-clamp-2">
           {post.description}
         </p>
-        
+
         {post.notes && (
-          <div className="mb-3">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Notes:</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300">{post.notes}</p>
+          <div className="mb-2">
+            <h3 className="text-xs font-medium text-gray-900 dark:text-white mb-0.5">Notes:</h3>
+            <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">{post.notes}</p>
           </div>
         )}
-        
+
         {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
+          <div className="flex flex-wrap gap-1 mt-auto">
+            {post.tags.map(tag => (
               <span
                 key={tag}
-                className="px-2 py-1 text-sm bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-100 rounded-full"
+                className="mr-2 text-xs text-emerald-600 dark:text-emerald-400 font-mono uppercase"
               >
                 {tag}
               </span>
@@ -127,11 +127,7 @@ export default function PostCard({ post }: PostCardProps) {
         )}
       </div>
 
-      <ImageModal
-        images={post.images}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <ImageModal images={post.images} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       {isEditing && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">

@@ -3,12 +3,11 @@ import PostCard from '@/components/PostCard';
 import FeaturedPost from '@/components/FeaturedPost';
 import { getAllPosts } from '@/lib/posts';
 
-
 export const revalidate = 0; // Disable cache for now
 
 export default async function Home() {
   const allPosts = await getAllPosts();
-  
+
   // Separate featured post (newest) from the rest
   const [featuredPost, ...remainingPosts] = allPosts;
 
@@ -16,13 +15,11 @@ export default async function Home() {
     <div className="min-h-screen">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        {featuredPost ? (
-          <FeaturedPost post={featuredPost} />
-        ) : null}
+        {featuredPost ? <FeaturedPost post={featuredPost} /> : null}
 
         {remainingPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {remainingPosts.map((post) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {remainingPosts.map(post => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>
