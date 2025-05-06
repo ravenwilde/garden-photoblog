@@ -22,50 +22,25 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   const { isAdmin } = useAuth();
   const router = useRouter();
   return (
-    <div className="relative w-full h-[60vh] mb-12 group">
-      <div className="block w-full h-full">
-        {/* Image container with gradient overlay */}
-        <div 
-          className={`relative w-full h-full bg-gray-100 dark:bg-gray-800 rounded-xl ${post.images?.[0]?.url ? 'cursor-pointer' : ''}`}
-          onClick={() => post.images?.[0]?.url && setIsModalOpen(true)}>
-          {post.images?.[0]?.url ? (
-            <>
-              <Image
-                src={post.images[0].url}
-                alt={post.images[0].alt || post.title}
-                fill
-                className="object-cover rounded-xl"
-                sizes="(min-width: 1536px) 1536px, 100vw"
-                priority
-                loading="eager"
-                fetchPriority="high"
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwPTE+PDYxOjs7QUJCNjdKOzshPVFXR1NJV0JWYWNmY2RKbHRuXGf/2wBDARUXFx4aHR4eHGg7Ojtoa2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2f/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-              />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent rounded-xl" />
-            </>
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-500">
-              <p>No image available</p>
-            </div>
-          )}
-        </div>
+    <div className="w-full mb-16 group border-b border-gray-200 dark:border-gray-800 pb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
+        {/* Right column: Content (on desktop) */}
+        <div className="order-2 lg:order-2">
+          <time
+            dateTime={post.date}
+            className="inline-block text-sm font-mono text-emerald-500 mb-4"
+          >
+            {format(parseISO(post.date), 'MMMM d, yyyy')}
+          </time>
 
-        {/* Content overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-          <div className="max-w-3xl">
-            <time dateTime={post.date} className="block text-sm text-gray-300 mb-4">
-              {format(parseISO(post.date), 'MMMM d, yyyy')}
-            </time>
-            <div className="flex items-center gap-2 mb-4">
-              <h1 className="text-4xl font-bold group-hover:text-green-400 transition-colors">
-                {post.title}
-              </h1>
-              {isAdmin && (
-                <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+              {post.title}
+            </h1>
+            {isAdmin && (
+              <div className="flex items-center gap-1 ml-2 bg-gray-100 dark:bg-gray-800 rounded-full p-1">
                 <button
-                  onClick={async (e) => {
+                  onClick={async e => {
                     e.stopPropagation();
                     if (window.confirm('Are you sure you want to delete this post?')) {
                       setIsDeleting(true);
@@ -85,55 +60,78 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
                     }
                   }}
                   disabled={isDeleting}
-                  className="p-1 text-gray-300 hover:text-red-400 transition-colors"
+                  className="p-1 text-gray-500 hover:text-red-500 transition-colors rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                   title="Delete post"
                 >
-                  <TrashIcon className="h-6 w-6" />
+                  <TrashIcon className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     setIsEditing(true);
                   }}
-                  className="p-1 text-gray-300 hover:text-indigo-400 transition-colors"
+                  className="p-1 text-gray-500 hover:text-emerald-500 transition-colors rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                   title="Edit post"
                 >
-                  <PencilIcon className="h-6 w-6" />
+                  <PencilIcon className="h-5 w-5" />
                 </button>
-                </div>
-              )}
-            </div>
-            <p className="text-lg text-gray-200 mb-4">
-              {post.description}
-            </p>
-            {post.notes && (
-              <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-300 mb-1">Notes:</h3>
-                <p className="text-sm text-gray-200">{post.notes}</p>
               </div>
             )}
-            <div className="flex flex-col gap-3">
-              {post.tags && post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 text-sm bg-emerald-900/50 text-emerald-100 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+          </div>
+
+          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 mb-6">
+            {post.description}
+          </p>
+
+          {post.notes && (
+            <div className="mb-6 border-l-4 border-emerald-500 pl-4">
+              <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Notes:</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{post.notes}</p>
             </div>
+          )}
+
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {post.tags.map(tag => (
+                <span
+                  key={tag}
+                  className="mr-3 text-sm text-emerald-600 dark:text-emerald-400 font-mono uppercase"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Left column: Image (on desktop) */}
+        <div className="order-1 lg:order-1">
+          <div
+            className={`relative aspect-[4/3] bg-gray-100 dark:bg-gray-900 ${post.images?.[0]?.url ? 'cursor-pointer' : ''}`}
+            onClick={() => post.images?.[0]?.url && setIsModalOpen(true)}
+          >
+            {post.images?.[0]?.url ? (
+              <Image
+                src={post.images[0].url}
+                alt={post.images[0].alt || post.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1023px) 100vw, 50vw"
+                priority
+                loading="eager"
+                fetchPriority="high"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQrJyEwPTE+PDYxOjs7QUJCNjdKOzshPVFXR1NJV0JWYWNmY2RKbHRuXGf/2wBDARUXFx4aHR4eHGg7Ojtoa2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2f/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400 dark:text-gray-500">
+                <p>No image available</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      <ImageModal
-        images={post.images}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      <ImageModal images={post.images} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       {isEditing && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
@@ -142,7 +140,6 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
               <EditPostForm
                 post={post}
                 onClose={() => setIsEditing(false)}
-                onCancel={() => setIsEditing(false)}
                 onSuccess={() => {
                   setIsEditing(false);
                   router.refresh();
