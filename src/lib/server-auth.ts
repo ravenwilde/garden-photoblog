@@ -19,31 +19,43 @@ export async function getServerSession() {
         },
         remove: (name: string, options: CookieOptions) => {
           cookieStore.set({ name, value: '', ...options, maxAge: 0 });
-        }
-      }
+        },
+      },
     }
   );
 
   // Get both user and session
-  const [{ data: { user }, error: userError }, { data: { session }, error: sessionError }] = await Promise.all([
-    supabase.auth.getUser(),
-    supabase.auth.getSession()
-  ]);
+  const [
+    {
+      data: { user },
+      error: userError,
+    },
+    {
+      data: { session },
+      error: sessionError,
+    },
+  ] = await Promise.all([supabase.auth.getUser(), supabase.auth.getSession()]);
 
-  // Handle errors gracefully
+  // Handle errors gracefully and return partial objects
+  if (userError && sessionError) {
+    console.error('Auth error:', userError);
+    console.error('Session error:', sessionError);
+    return { user: null, session: null };
+  }
+
   if (userError) {
     console.error('Auth error:', userError);
-    return null;
+    return { user: null, session };
   }
 
   if (sessionError) {
     console.error('Session error:', sessionError);
-    return null;
+    return { user, session: null };
   }
 
-  // Both user and session must be present
-  if (!user || !session) {
-    return null;
+  // Both user and session must be present for a complete return
+  if (!user && !session) {
+    return { user: null, session: null };
   }
 
   return { user, session };

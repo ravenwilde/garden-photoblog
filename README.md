@@ -149,12 +149,58 @@ This application implements comprehensive security measures:
 
 ### Content Security Policy (CSP)
 - Strict CSP headers with nonce-based script execution
-- Configured for both development and production environments
 
-### Authentication
-- Supabase authentication with secure cookie handling
-- Session validation in middleware
-- Admin-only routes protected with email verification
+## Testing
+
+The project includes comprehensive test coverage for critical functionality:
+
+### Test Coverage
+
+- **Overall Coverage**: 38.45% statements, 33.54% branches, 37% functions, 39.21% lines
+- **Utility Functions**:
+  - `posts.ts`: 71.15% statements, 59.25% branches, 100% functions
+  - `tags.ts`: 80% statements, 57.14% branches, 100% functions
+  - `csrf.ts`: 92.3% statements, 85.71% branches, 100% functions
+  - `server-auth.ts`: 78.94% statements, 100% branches, 25% functions
+- **API Routes**: 100% coverage for several key endpoints
+
+### Testing Infrastructure
+
+- **Framework**: Jest with Next.js testing utilities
+- **Test Organization**:
+  - API tests: `src/app/api/__tests__/`
+  - Utility tests: `src/lib/__tests__/`
+  - Component tests: `src/components/__tests__/`
+- **Mock Implementations**:
+  - Chainable mock pattern for Supabase client
+  - Custom mocks for authentication, file uploads, and external services
+  - Test helpers for common testing scenarios
+
+### Key Test Areas
+
+- **API Routes**:
+  - Authentication: Session management (`/api/auth/set-session`, `/api/auth/clear-session`)
+  - CSRF Protection: Token generation and validation
+  - Content Management: Posts and tags CRUD operations
+  - Upload System: Image upload with various scenarios (auth, validation, errors)
+
+- **Authentication**:
+  - Supabase authentication with secure cookie handling
+  - Session validation in middleware
+  - Admin-only routes protected with email verification
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run specific tests
+npm test -- src/lib/__tests__/posts.test.ts
+
+# Run tests with coverage report
+npm test -- --coverage
+```
 
 ## Image Upload System
 
@@ -164,33 +210,6 @@ The application features a robust image upload system:
 2. EXIF metadata parsing for timestamps while stripping location data for privacy
 3. Type-safe image handling using Supabase stored procedures
 4. Schema cache consistency between preview and production environments
-
-## Testing
-
-This project uses Jest for testing with comprehensive test coverage for API routes:
-
-### Testing Infrastructure
-
-- **Framework**: Jest with Next.js testing utilities
-- **Test Files**: Located in `src/app/api/__tests__/`
-- **Mocks**: Custom mocks for Supabase, authentication, and file uploads
-
-### API Route Tests
-
-- **Authentication Routes**: Tests for session management (`/api/auth/set-session`, `/api/auth/clear-session`)
-- **CSRF Protection**: Tests for CSRF token generation and validation
-- **Content Routes**: Tests for posts and tags CRUD operations
-- **Upload System**: Tests for image upload with various scenarios (auth, validation, errors)
-
-### Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run specific tests
-npm test -- src/app/api/__tests__/upload.test.ts
-```
 
 ## Development Environment
 

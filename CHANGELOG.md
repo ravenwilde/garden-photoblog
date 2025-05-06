@@ -12,6 +12,18 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
+## [1.3.3] - 2025-05-02
+
+### Testing
+- Implemented comprehensive tests for utility functions in the `/lib` directory
+- Created tests for CSRF utility functions (generateToken, verifyToken, getTokenFromHeaders)
+- Implemented tests for server authentication utilities (getServerSession)
+- Added tests for tag utilities (createTag, getAllTags, updateTag, deleteTag)
+- Improved tests for post utilities (getAllPosts, createPost, updatePost, deletePost)
+- Developed a chainable mock implementation for Supabase client to improve test reliability
+- Increased test coverage for posts.ts (71.15%), tags.ts (80%), csrf.ts (92.3%), and server-auth.ts (78.94%)
+- Overall test coverage improved to 38.45% statements, 33.54% branches, 37% functions, and 39.21% lines
+
 ## [1.3.2] - 2025-05-01
 
 ### Testing
