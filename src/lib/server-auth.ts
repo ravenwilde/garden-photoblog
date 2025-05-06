@@ -53,7 +53,7 @@ export async function getServerSession() {
     return { user, session: null };
   }
 
-  // Both user and session must be present for a complete return
+  // Return partial results if either user or session is missing; both being present constitutes a complete return
   if (!user && !session) {
     return { user: null, session: null };
   }
