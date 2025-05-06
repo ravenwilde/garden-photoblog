@@ -12,7 +12,7 @@ type MockedServerAuth = typeof import('@/lib/server-auth') & {
 // Mock the server-auth module
 jest.mock('@/lib/server-auth', () => ({
   getServerSession: jest.fn(),
-  isAdmin: jest.fn().mockReturnValue(false)
+  isAdmin: jest.fn().mockReturnValue(false),
 }));
 
 // Cast to our extended type
@@ -21,9 +21,10 @@ const mockedServerAuth = serverAuth as MockedServerAuth;
 // Mock the tags library
 jest.mock('@/lib/tags', () => ({
   getAllTags: jest.fn(),
+  getAllTagsAdmin: jest.fn(),
   createTag: jest.fn(),
   updateTag: jest.fn(),
-  deleteTag: jest.fn()
+  deleteTag: jest.fn(),
 }));
 
 describe('API: /api/tags', () => {
@@ -32,34 +33,98 @@ describe('API: /api/tags', () => {
   });
 
   describe('GET', () => {
-    it('should return all tags', async () => {
+    it('should return all tags for regular users', async () => {
       // Mock the getAllTags function to return test data
       const mockTags = [
         { id: '1', name: 'garden', post_count: 5 },
         { id: '2', name: 'flowers', post_count: 3 },
-        { id: '3', name: 'vegetables', post_count: 2 }
+        { id: '3', name: 'vegetables', post_count: 2 },
       ];
-      
+
       (tagsLib.getAllTags as jest.Mock).mockResolvedValue(mockTags);
-      
-      // Call the GET handler
-      const response = await GET();
+
+      // Create a mock request with non-admin referer
+      const mockRequest = createMockRequest({
+        method: 'GET',
+        headers: {
+          referer: 'https://example.com/',
+        },
+      });
+
+      // Mock session to return non-admin user
+      (serverAuth.getServerSession as jest.Mock).mockResolvedValue({
+        user: {
+          email: 'user@example.com',
+        },
+      });
+
+      // Call the GET handler with the mock request
+      const response = await GET(mockRequest);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(200);
       expect(data).toEqual(mockTags);
       expect(tagsLib.getAllTags).toHaveBeenCalledTimes(1);
     });
 
+    it('should return all tags including zero-count tags for admin users', async () => {
+      // Mock the getAllTagsAdmin function to return test data
+      const mockTags = [
+        { id: '1', name: 'garden', post_count: 5 },
+        { id: '2', name: 'flowers', post_count: 3 },
+        { id: '3', name: 'vegetables', post_count: 2 },
+        { id: '4', name: 'empty-tag', post_count: 0 },
+      ];
+
+      // Mock both tag functions
+      (tagsLib.getAllTags as jest.Mock).mockResolvedValue(
+        mockTags.filter(tag => tag.post_count > 0)
+      );
+      (tagsLib.getAllTagsAdmin as jest.Mock).mockResolvedValue(mockTags);
+
+      // Set environment variable for admin email
+      process.env.NEXT_PUBLIC_ADMIN_EMAIL = 'admin@example.com';
+
+      // Create a mock request with admin area referer
+      const mockRequest = createMockRequest({
+        method: 'GET',
+        headers: {
+          referer: 'https://example.com/white-rabbit/tags',
+        },
+      });
+
+      // Mock session to return admin user
+      (serverAuth.getServerSession as jest.Mock).mockResolvedValue({
+        user: {
+          email: 'admin@example.com',
+        },
+      });
+
+      // Call the GET handler with the mock request
+      const response = await GET(mockRequest);
+      const { status, data } = await parseResponse(response);
+
+      // Verify the response
+      expect(status).toBe(200);
+      expect(data).toEqual(mockTags);
+      expect(tagsLib.getAllTagsAdmin).toHaveBeenCalledTimes(1);
+    });
+
     it('should handle errors when fetching tags', async () => {
       // Mock the getAllTags function to throw an error
       (tagsLib.getAllTags as jest.Mock).mockRejectedValue(new Error('Database error'));
-      
-      // Call the GET handler
-      const response = await GET();
+
+      // Create a mock request
+      const mockRequest = createMockRequest({
+        method: 'GET',
+        headers: {},
+      });
+
+      // Call the GET handler with the mock request
+      const response = await GET(mockRequest);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(500);
       expect(data).toEqual({ error: 'Failed to get tags' });
@@ -80,31 +145,31 @@ describe('API: /api/tags', () => {
         },
       });
       mockedServerAuth.isAdmin.mockReturnValue(true);
-      
+
       // Mock environment variable
       process.env.NEXT_PUBLIC_ADMIN_EMAIL = 'admin@example.com';
-      
+
       // Mock the createTag function
       const newTag = { name: 'newtag' };
       const createdTag = {
         id: 'new-id',
         name: 'newtag',
-        post_count: 0
+        post_count: 0,
       };
-      
+
       (tagsLib.createTag as jest.Mock).mockResolvedValue(createdTag);
-      
+
       // Create a mock request
       const request = createMockRequest({
         method: 'POST',
         url: 'http://localhost:3000/api/tags',
-        body: newTag
+        body: newTag,
       });
-      
+
       // Call the POST handler
       const response = await POST(request);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(200);
       expect(data).toEqual(createdTag);
@@ -114,18 +179,18 @@ describe('API: /api/tags', () => {
     it('should return 401 when not authenticated', async () => {
       // Setup no session
       (serverAuth.getServerSession as jest.Mock).mockResolvedValue(null);
-      
+
       // Create a mock request
       const request = createMockRequest({
         method: 'POST',
         url: 'http://localhost:3000/api/tags',
-        body: { name: 'newtag' }
+        body: { name: 'newtag' },
       });
-      
+
       // Call the POST handler
       const response = await POST(request);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(401);
       expect(data).toEqual({ error: 'Unauthorized' });
@@ -145,21 +210,21 @@ describe('API: /api/tags', () => {
         },
       });
       mockedServerAuth.isAdmin.mockReturnValue(false);
-      
+
       // Mock environment variable
       process.env.NEXT_PUBLIC_ADMIN_EMAIL = 'admin@example.com';
-      
+
       // Create a mock request
       const request = createMockRequest({
         method: 'POST',
         url: 'http://localhost:3000/api/tags',
-        body: { name: 'newtag' }
+        body: { name: 'newtag' },
       });
-      
+
       // Call the POST handler
       const response = await POST(request);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(401);
       expect(data).toEqual({ error: 'Unauthorized' });
@@ -179,21 +244,21 @@ describe('API: /api/tags', () => {
         },
       });
       mockedServerAuth.isAdmin.mockReturnValue(true);
-      
+
       // Mock environment variable
       process.env.NEXT_PUBLIC_ADMIN_EMAIL = 'admin@example.com';
-      
+
       // Create a mock request with missing name
       const request = createMockRequest({
         method: 'POST',
         url: 'http://localhost:3000/api/tags',
-        body: {}
+        body: {},
       });
-      
+
       // Call the POST handler
       const response = await POST(request);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(400);
       expect(data).toEqual({ error: 'Invalid tag name' });
@@ -213,21 +278,21 @@ describe('API: /api/tags', () => {
         },
       });
       mockedServerAuth.isAdmin.mockReturnValue(true);
-      
+
       // Mock environment variable
       process.env.NEXT_PUBLIC_ADMIN_EMAIL = 'admin@example.com';
-      
+
       // Create a mock request with non-string name
       const request = createMockRequest({
         method: 'POST',
         url: 'http://localhost:3000/api/tags',
-        body: { name: 123 }
+        body: { name: 123 },
       });
-      
+
       // Call the POST handler
       const response = await POST(request);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(400);
       expect(data).toEqual({ error: 'Invalid tag name' });
@@ -247,25 +312,25 @@ describe('API: /api/tags', () => {
         },
       });
       mockedServerAuth.isAdmin.mockReturnValue(true);
-      
+
       // Mock environment variable
       process.env.NEXT_PUBLIC_ADMIN_EMAIL = 'admin@example.com';
-      
+
       // Mock the createTag function to throw an error
       const errorMessage = 'Database error';
       (tagsLib.createTag as jest.Mock).mockRejectedValue(new Error(errorMessage));
-      
+
       // Create a mock request
       const request = createMockRequest({
         method: 'POST',
         url: 'http://localhost:3000/api/tags',
-        body: { name: 'newtag' }
+        body: { name: 'newtag' },
       });
-      
+
       // Call the POST handler
       const response = await POST(request);
       const { status, data } = await parseResponse(response);
-      
+
       // Verify the response
       expect(status).toBe(500);
       expect(data).toEqual({ error: errorMessage });
