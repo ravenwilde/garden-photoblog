@@ -32,7 +32,8 @@ export default async function Home({ searchParams }: { searchParams: { tag?: str
     // Get filtered posts
     const filteredPosts = await getAllPosts(tagFilter);
 
-    // Remove the featured post from filtered results if it exists there
+    // Exclude the featured post from filtered results to avoid duplication, 
+    // as it is already displayed separately at the top of the page.
     displayPosts = featuredPost
       ? filteredPosts.filter(post => post.id !== featuredPost.id)
       : filteredPosts;
