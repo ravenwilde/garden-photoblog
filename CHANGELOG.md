@@ -12,6 +12,18 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
+## [1.3.4] - 2025-05-05
+
+### Testing
+- Updated ESLint configuration to disable specific rules for test files
+- Fixed issues in server-auth tests to properly handle partial authentication responses
+- Improved test file organization and documentation
+
+### Documentation
+- Consolidated testing documentation in README.md for better clarity
+- Enhanced test coverage reporting with more detailed metrics
+- Added examples for running specific tests and generating coverage reports
+
 ## [1.3.3] - 2025-05-02
 
 ### Testing
