@@ -26,30 +26,31 @@ export default async function Home({ searchParams }: { searchParams: { tag?: str
     [featuredPost, ...remainingPosts] = allPosts;
   }
 
-  // If tag filter is applied, filter only the remaining posts
+  // If tag filter is applied, get all posts with that tag
+  // If no filter, use the remaining posts (excluding featured)
   let displayPosts = remainingPosts;
-  if (tagFilter) {
-    // Get filtered posts
-    const filteredPosts = await getAllPosts(tagFilter);
+  let showFeaturedPost = true;
 
-    // Exclude the featured post from filtered results to avoid duplication, 
-    // as it is already displayed separately at the top of the page.
-    displayPosts = featuredPost
-      ? filteredPosts.filter(post => post.id !== featuredPost.id)
-      : filteredPosts;
+  if (tagFilter) {
+    // When a tag filter is applied, get all posts with that tag
+    // including the featured post if it has the tag
+    displayPosts = await getAllPosts(tagFilter);
+
+    // Don't show the featured post separately when filtering
+    showFeaturedPost = false;
   }
 
   return (
     <div className="min-h-screen">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        {/* Always show featured post */}
-        {featuredPost && <FeaturedPost post={featuredPost} />}
-
         {/* Tag filter */}
-        <div className="mb-6 mt-8">
+        <div className="mb-6">
           <TagFilter tags={tags} className="" />
         </div>
+
+        {/* Show featured post only when no tag filter is applied */}
+        {showFeaturedPost && featuredPost && <FeaturedPost post={featuredPost} />}
 
         {displayPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
