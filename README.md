@@ -17,7 +17,7 @@ A beautiful and modern photo blog application built with Next.js 15, TypeScript,
 - 🌙 Dark mode support
 - 🔒 Admin-only content management
 - 📷 Image gallery with modal view
-- 🏷️ Tag support for posts
+- 🏷️ Enhanced tag support with filtering and navigation
 - 🖼️ Drag and drop image uploads
 - 🔄 Automated database migrations
 - 🛡️ Comprehensive security measures

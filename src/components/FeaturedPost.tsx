@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Post } from '@/types';
 import { format, parseISO } from 'date-fns';
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { deletePostAction } from '@/app/actions';
 import ImageModal from './ImageModal';
@@ -21,8 +22,21 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
   const [isEditing, setIsEditing] = useState(false);
   const { isAdmin } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTag = searchParams.get('tag');
+  // Animation state
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Effect to handle animation when component mounts or unmounts
+  useEffect(() => {
+    setIsVisible(true);
+    return () => setIsVisible(false);
+  }, []);
+
   return (
-    <div className="w-full mb-16 group border-b border-gray-200 dark:border-gray-800 pb-8">
+    <div
+      className={`w-full mb-16 group border-b border-gray-200 dark:border-gray-800 pb-8 transition-all duration-500 ease-in-out ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-10'}`}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
         {/* Right column: Content (on desktop) */}
         <div className="order-2 lg:order-2">
@@ -93,12 +107,17 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
           {post.tags && post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {post.tags.map(tag => (
-                <span
+                <Link
                   key={tag}
-                  className="mr-3 text-sm text-emerald-600 dark:text-emerald-400 font-mono uppercase"
+                  href={`/?tag=${encodeURIComponent(tag)}`}
+                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                    currentTag === tag
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800'
+                  }`}
                 >
                   {tag}
-                </span>
+                </Link>
               ))}
             </div>
           )}

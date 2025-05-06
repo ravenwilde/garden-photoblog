@@ -12,6 +12,29 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
+## [1.4.0] - 2025-05-06
+
+### Features
+- Added tag filtering functionality to the main page
+- Created dedicated tag pages at `/tags/[tagName]`
+- Implemented TagFilter component for filtering posts by tag
+- Enhanced posts utility to support filtering by tag
+- Added new utility function to get tags sorted by popularity
+
+### UX Improvements
+- Made tags clickable in PostCard and FeaturedPost components
+- Improved tag styling with better visual hierarchy
+- Added tag counts to the tag filter
+- Enhanced tag navigation with active state indicators
+- Optimized tag filtering for better performance
+- Hide tags with zero posts from tag filter and navigation
+- Positioned tag filter between featured post and regular post grid
+- Added smooth animation to FeaturedPost when tag filtering changes
+- Simplified tag detail pages with improved back navigation
+- Always show most recent post as featured post, even when filtering by tag
+- Apply tag filtering only to non-featured posts on the main page
+- Fixed cookie-related issues in tag pages with static data fetching
+
 ## [1.3.4] - 2025-05-05
 
 ### Testing

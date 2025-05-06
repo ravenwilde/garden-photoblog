@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { format, parseISO } from 'date-fns';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import ImageModal from './ImageModal';
 import EditPostForm from './EditPostForm';
@@ -21,6 +22,8 @@ export default function PostCard({ post }: PostCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const { isAdmin } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentTag = searchParams.get('tag');
 
   return (
     <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 h-full flex flex-col">
@@ -114,14 +117,26 @@ export default function PostCard({ post }: PostCardProps) {
         )}
 
         {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-auto">
+          <div className="flex flex-wrap gap-1.5 mt-auto">
             {post.tags.map(tag => (
-              <span
+              <Link
                 key={tag}
-                className="mr-2 text-xs text-emerald-600 dark:text-emerald-400 font-mono uppercase"
+                href={`/?tag=${encodeURIComponent(tag)}`}
+                className={`px-2 py-1 rounded-full text-xs transition-colors ${
+                  currentTag === tag
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-100 dark:hover:bg-emerald-800'
+                }`}
+                onClick={e => {
+                  // If we're already on a tag page, use client-side navigation
+                  if (window.location.pathname.startsWith('/tags/')) {
+                    e.preventDefault();
+                    router.push(`/?tag=${encodeURIComponent(tag)}`);
+                  }
+                }}
               >
                 {tag}
-              </span>
+              </Link>
             ))}
           </div>
         )}
