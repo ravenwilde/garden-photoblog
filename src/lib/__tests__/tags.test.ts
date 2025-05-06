@@ -173,7 +173,7 @@ describe('Tags Utilities', () => {
   });
 
   describe('getAllTags', () => {
-    it('should return all tags with post counts', async () => {
+    it('should return only tags with post counts greater than 0', async () => {
       // Setup mock
       const mockTags = [
         { id: 'tag-1', name: 'tag-1', post_tags: [{ post_id: 'post-1' }, { post_id: 'post-2' }] },
@@ -206,11 +206,10 @@ describe('Tags Utilities', () => {
       // Call the function
       const result = await getAllTags();
 
-      // Assertions
+      // Assertions - only tags with post_count > 0 should be returned
       expect(result).toEqual([
         { id: 'tag-1', name: 'tag-1', post_count: 2 },
         { id: 'tag-2', name: 'tag-2', post_count: 1 },
-        { id: 'tag-3', name: 'tag-3', post_count: 0 },
       ]);
       expect(mockSupabase.from).toHaveBeenCalledWith('tags');
     });
