@@ -44,27 +44,31 @@ export default async function Home({ searchParams }: { searchParams: { tag?: str
     <div className="min-h-screen">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        {/* Tag filter */}
-        <div className="mb-6">
-          <TagFilter tags={tags} className="" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+          {/* Tag filter */}
+          {/* The TagFilter spans two columns on small screens (sm:col-span-2) */}
+          {/* and one column on large screens (lg:col-span-1) to fit the responsive grid layout */}
+          <TagFilter tags={tags} className="sm:col-span-2 lg:col-span-1" />
+
+          <div className="sm:col-span-2 lg:col-span-3">
+            {/* Show featured post only when no tag filter is applied */}
+            {showFeaturedPost && featuredPost && <FeaturedPost post={featuredPost} />}
+
+            {displayPosts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {displayPosts.map(post => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            ) : null}
+
+            {allPosts.length === 0 && (
+              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                No posts yet. Click &quot;New Post&quot; to create one!
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Show featured post only when no tag filter is applied */}
-        {showFeaturedPost && featuredPost && <FeaturedPost post={featuredPost} />}
-
-        {displayPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {displayPosts.map(post => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
-        ) : null}
-
-        {allPosts.length === 0 && (
-          <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-            No posts yet. Click &quot;New Post&quot; to create one!
-          </div>
-        )}
       </main>
     </div>
   );
