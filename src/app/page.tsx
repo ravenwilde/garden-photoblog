@@ -55,11 +55,6 @@ export default async function Home({ searchParams }: { searchParams: { tag?: str
             {showFeaturedPost && featuredPost && <FeaturedPost post={featuredPost} />}
 
             {displayPosts.length > 0 ? (
-              {/* Responsive grid layout for posts:
-                  - 1 column on small screens
-                  - 2 columns on medium (sm) and large (lg) screens
-                  - 3 columns on extra-large (xl) screens
-                  This layout ensures optimal use of space across different screen sizes. */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {displayPosts.map(post => (
                   <PostCard key={post.id} post={post} />
