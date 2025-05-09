@@ -46,6 +46,8 @@ export default async function Home({ searchParams }: { searchParams: { tag?: str
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6">
           {/* Tag filter */}
+          {/* The TagFilter spans two columns on small screens (sm:col-span-2) */}
+          {/* and one column on large screens (lg:col-span-1) to fit the responsive grid layout */}
           <TagFilter tags={tags} className="sm:col-span-2 lg:col-span-1" />
 
           <div className="sm:col-span-2 lg:col-span-3">
