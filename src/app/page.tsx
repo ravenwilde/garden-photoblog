@@ -48,9 +48,11 @@ export default async function Home({ searchParams }: { searchParams: { tag?: str
           {/* Tag filter */}
           {/* The TagFilter spans two columns on small screens (sm:col-span-2) */}
           {/* and one column on large screens (lg:col-span-1) to fit the responsive grid layout */}
-          <TagFilter tags={tags} className="sm:col-span-2 lg:col-span-1" />
+          <div className="sm:col-span-2 lg:col-span-1 lg:order-last">
+            <TagFilter tags={tags} className="lg:sticky lg:top-20" />
+          </div>
 
-          <div className="sm:col-span-2 lg:col-span-3">
+          <div className="sm:col-span-2 lg:col-span-3 lg:order-first">
             {/* Show featured post only when no tag filter is applied */}
             {showFeaturedPost && featuredPost && <FeaturedPost post={featuredPost} />}
 

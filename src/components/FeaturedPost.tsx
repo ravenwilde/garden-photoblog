@@ -37,9 +37,9 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
     <div
       className={`w-full mb-16 group border-b border-gray-200 dark:border-gray-800 pb-8 transition-all duration-500 ease-in-out ${isVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-10'}`}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-end">
         {/* Right column: Content (on desktop) */}
-        <div className="order-2 lg:order-2">
+        <div className="order-2 xl:order-2">
           <time
             dateTime={post.date}
             className="inline-block text-sm font-mono text-emerald-500 mb-4"
