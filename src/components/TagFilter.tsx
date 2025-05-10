@@ -58,7 +58,7 @@ export default function TagFilter({ tags, className = '' }: TagFilterProps) {
       </button>
       <div
         id="tag-filter-content"
-        className={`flex flex-wrap gap-2 overflow-hidden transition-all duration-300 ease-in-out ${isMobile ? (isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0') : 'max-h-96 opacity-100'}`}
+        className={`flex flex-wrap gap-2 overflow-hidden lg:overflow-visible transition-all duration-300 ease-in-out ${isMobile ? (isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0') : 'max-h-96 opacity-100'}`}
       >
         <Link
           href={pathname}
