@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import type { Tag } from '@/lib/tags';
 import FilterModal from './FilterModal';
@@ -15,6 +15,7 @@ interface TagFilterProps {
 export default function TagFilter({ tags, className = '' }: TagFilterProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const currentTag = searchParams.get('tag');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -40,16 +41,42 @@ export default function TagFilter({ tags, className = '' }: TagFilterProps) {
     return null;
   }
 
-  // Render tag list for both modal and desktop view
-  const renderTagList = () => (
+  // Handle tag selection and close modal if on mobile
+  const handleTagSelect = (tagName?: string) => {
+    if (isMobile) {
+      setIsModalOpen(false);
+    }
+
+    if (tagName) {
+      router.push(`${pathname}?tag=${encodeURIComponent(tagName)}`);
+    } else {
+      router.push(pathname);
+    }
+  };
+
+  // Get tag item class based on whether it's selected
+  const getTagItemClass = (isSelected: boolean) => {
+    return `px-3 py-1.5 rounded-full text-sm transition-colors ${
+      isSelected
+        ? 'bg-emerald-500 text-white'
+        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+    }`;
+  };
+
+  // Render tag content (label and count)
+  const renderTagContent = (tagName: string, count?: number) => (
+    <>
+      {tagName}
+      {count !== undefined && <span className="ml-1 text-xs opacity-70">({count})</span>}
+    </>
+  );
+
+  // Render tag list for desktop view (using regular Links)
+  const renderDesktopTagList = () => (
     <div className="flex flex-wrap gap-2">
       <Link
         href={pathname}
-        className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
-          !currentTag
-            ? 'bg-emerald-500 text-white'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-        }`}
+        className={getTagItemClass(!currentTag)}
         aria-current={!currentTag ? 'page' : undefined}
       >
         All
@@ -59,16 +86,35 @@ export default function TagFilter({ tags, className = '' }: TagFilterProps) {
         <Link
           key={tag.id}
           href={`${pathname}?tag=${encodeURIComponent(tag.name)}`}
-          className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
-            currentTag === tag.name
-              ? 'bg-emerald-500 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-          }`}
+          className={getTagItemClass(currentTag === tag.name)}
           aria-current={currentTag === tag.name ? 'page' : undefined}
         >
-          {tag.name}
-          <span className="ml-1 text-xs opacity-70">({tag.post_count})</span>
+          {renderTagContent(tag.name, tag.post_count)}
         </Link>
+      ))}
+    </div>
+  );
+
+  // Render tag list for modal view (using buttons that close the modal)
+  const renderModalTagList = () => (
+    <div className="flex flex-wrap gap-2">
+      <button
+        onClick={() => handleTagSelect()}
+        className={getTagItemClass(!currentTag)}
+        aria-current={!currentTag ? 'page' : undefined}
+      >
+        All
+      </button>
+
+      {tags.map(tag => (
+        <button
+          key={tag.id}
+          onClick={() => handleTagSelect(tag.name)}
+          className={getTagItemClass(currentTag === tag.name)}
+          aria-current={currentTag === tag.name ? 'page' : undefined}
+        >
+          {renderTagContent(tag.name, tag.post_count)}
+        </button>
       ))}
     </div>
   );
@@ -102,7 +148,7 @@ export default function TagFilter({ tags, className = '' }: TagFilterProps) {
             <div className="space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</h3>
-                {renderTagList()}
+                {renderModalTagList()}
               </div>
               {/* Additional filter options can be added here */}
             </div>
@@ -113,7 +159,7 @@ export default function TagFilter({ tags, className = '' }: TagFilterProps) {
         <>
           <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-3">Filter by Tag</h2>
           <div id="tag-filter-content" className="flex flex-wrap gap-2">
-            {renderTagList()}
+            {renderDesktopTagList()}
           </div>
         </>
       )}
