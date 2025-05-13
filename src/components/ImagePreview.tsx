@@ -58,9 +58,10 @@ export default function ImagePreview({ file, onRemove, error, progress }: ImageP
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            unoptimized={true}
           />
         )}
-        
+
         {/* Progress overlay */}
         {typeof progress === 'number' && progress < 100 && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -105,11 +106,15 @@ export default function ImagePreview({ file, onRemove, error, progress }: ImageP
 
       {/* Image info */}
       <div className="p-2 text-xs text-gray-600 dark:text-gray-300 space-y-1">
-        <div className="truncate" title={file.name}>{file.name}</div>
+        <div className="truncate" title={file.name}>
+          {file.name}
+        </div>
         <div className="flex justify-between">
           <span>{formatFileSize(file.size)}</span>
           {dimensions && (
-            <span>{dimensions.width} × {dimensions.height}px</span>
+            <span>
+              {dimensions.width} × {dimensions.height}px
+            </span>
           )}
         </div>
       </div>

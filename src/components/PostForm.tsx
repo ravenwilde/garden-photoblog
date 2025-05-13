@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { format } from 'date-fns';
-import Image from 'next/image';
 import ImageUpload from './ImageUpload';
 import TagInput from './TagInput';
+import ImageThumbnail from './ImageThumbnail';
 import type { NewPost, Image as ImageType } from '@/types';
+import { FormLayout, FormInput, FormTextarea, FormButton } from './forms';
 
 interface PostFormProps {
   onSubmit: (post: NewPost) => void;
@@ -50,102 +51,38 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
     });
   };
 
-
-
-
   const removeImage = (indexToRemove: number) => {
     setImages(images.filter((_, index) => index !== indexToRemove));
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          required
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
-        />
-      </div>
-
-      {/* Date field */}
-      <div>
-        <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Date
-        </label>
-        <input
-          type="datetime-local"
-          id="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
-        />
-      </div>
-
-      {/* Tag input */}
-      <TagInput
-        value={tags}
-        onChange={setTags}
-        label="Tags"
-        placeholder="Add tags (press Enter, comma, or click to select)"
-      />
-
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Description
-        </label>
-        <textarea
-          id="description"
-          required
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Notes
-        </label>
-        <textarea
-          id="notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          rows={10}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 dark:border-gray-600"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Images
-        </label>
+    <FormLayout onSubmit={handleSubmit}>
+      {/* 1. Images - Featured at the top */}
+      <div className="mb-8">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Upload Images</h2>
         <ImageUpload onImagesUploaded={handleImagesUploaded} />
-        
+
         {images.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((image, index) => (
               <div key={index} className="relative group">
-                <Image
-                  src={image.url}
-                  alt={image.alt || 'Garden photo'}
-                  width={image.width || 800}
-                  height={image.height || 600}
-                  className="w-full h-32 object-cover rounded-lg"
+                <ImageThumbnail
+                  image={image}
+                  className="w-full h-32 rounded-lg border-2 border-transparent group-hover:border-emerald-300 transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
                   className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label="Remove image"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -154,17 +91,61 @@ export default function PostForm({ onSubmit, isSubmitting = false }: PostFormPro
         )}
       </div>
 
+      {/* 2. Date field - Second priority */}
+      <FormInput
+        id="date"
+        type="datetime-local"
+        label="Date"
+        value={date}
+        onChange={e => setDate(e.target.value)}
+        required
+      />
 
+      {/* 3. Title */}
+      <FormInput
+        id="title"
+        type="text"
+        label="Title"
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+        required
+      />
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Creating...' : 'Create Post'}
-        </button>
+      {/* 4. Tags */}
+      <div className="mb-6">
+        <TagInput
+          value={tags}
+          onChange={setTags}
+          label="Tags"
+          placeholder="Add tags (press Enter, comma, or click to select)"
+        />
       </div>
-    </form>
+
+      {/* 5. Description */}
+      <FormTextarea
+        id="description"
+        label="Description"
+        value={description}
+        onChange={e => setDescription(e.target.value)}
+        rows={3}
+        required
+      />
+
+      {/* 6. Notes (optional) */}
+      <FormTextarea
+        id="notes"
+        label="Notes (optional)"
+        value={notes}
+        onChange={e => setNotes(e.target.value)}
+        rows={6}
+      />
+
+      {/* Submit button */}
+      <div className="flex justify-end">
+        <FormButton type="submit" isLoading={isSubmitting} variant="primary">
+          {isSubmitting ? 'Creating...' : 'Create Post'}
+        </FormButton>
+      </div>
+    </FormLayout>
   );
 }
