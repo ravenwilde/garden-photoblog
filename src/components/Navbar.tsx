@@ -11,7 +11,7 @@ import { getCsrfToken } from '@/lib/csrf-client';
 
 export default function Navbar() {
   const { isAdmin, signOut, loading } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
   const router = useRouter();
@@ -39,34 +39,22 @@ export default function Navbar() {
           <div className="flex items-center space-x-4">
             {isAdmin && (
               <div className="flex items-center space-x-4">
-                <Link
-                  href="/white-rabbit/tags"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-                >
-                  Tags
-                </Link>
                 <button
                   onClick={() => setIsNewPostModalOpen(true)}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
                 >
                   New Post
                 </button>
+                <Link
+                  href="/white-rabbit/tags"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                >
+                  Tags
+                </Link>
               </div>
             )}
 
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Toggle theme"
-              >
-                {mounted &&
-                  (theme === 'dark' ? (
-                    <SunIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  ) : (
-                    <MoonIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  ))}
-              </button>
               <button
                 onClick={async () => {
                   try {
@@ -78,6 +66,18 @@ export default function Navbar() {
                 className="text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
               >
                 Sign Out
+              </button>
+              <button
+                onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {mounted &&
+                  (resolvedTheme === 'dark' ? (
+                    <SunIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                  ) : (
+                    <MoonIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                  ))}
               </button>
             </div>
           </div>

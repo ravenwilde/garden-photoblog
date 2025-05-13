@@ -12,6 +12,14 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
+## [1.4.2] - 2025-05-13
+
+### Bug Fixes
+- Fixed dark mode implementation for Tailwind CSS v4 compatibility
+- Updated CSS configuration to use `@custom-variant` for class-based dark mode
+- Added stylelint configuration to support Tailwind CSS v4 syntax
+- Ensured dark mode classes are applied based on the `.dark` class instead of media queries
+
 ## [1.4.1] - 2025-05-13
 
 ### Bug Fixes
