@@ -10,7 +10,9 @@ export const revalidate = 0; // Disable cache for now
 
 export default async function Home({ searchParams }: { searchParams: { tag?: string } }) {
   // Get the tag filter from search params
-  const tagFilter = searchParams.tag;
+  // In Next.js 15, we need to await searchParams before accessing its properties
+  const params = await searchParams;
+  const tagFilter = params.tag;
 
   // Get all tags for the filter component
   const tags = await getTagsWithPostCounts();

@@ -3,10 +3,7 @@ import type { NextRequest } from 'next/server';
 import { deleteTag, updateTag } from '@/lib/tags';
 import { getServerSession } from '@/lib/server-auth';
 
-export async function PUT(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const sessionData = await getServerSession();
 
   if (!sessionData || !sessionData.user?.email) {
@@ -35,10 +32,7 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
   const sessionData = await getServerSession();
 

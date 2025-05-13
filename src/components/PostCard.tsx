@@ -7,7 +7,7 @@ import { format, parseISO } from 'date-fns';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TrashIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import ImageModal from './ImageModal';
-import EditPostForm from './EditPostForm';
+import PostFormModal from './PostFormModal';
 import { useAuth } from '@/lib/auth';
 import { deletePostAction } from '@/app/actions';
 import type { Post } from '@/types';
@@ -67,7 +67,7 @@ export default function PostCard({ post }: PostCardProps) {
               <div className="flex items-center">
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="p-0.5 text-gray-500 hover:text-indigo-500 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors"
+                  className="p-0.5 text-gray-500 hover:text-emerald-500 dark:text-gray-400 dark:hover:text-emerald-400 transition-colors"
                   title="Edit post"
                 >
                   <PencilSquareIcon className="h-4 w-4" />
@@ -143,23 +143,16 @@ export default function PostCard({ post }: PostCardProps) {
       </div>
 
       <ImageModal images={post.images} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      {isEditing && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
-            <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-medium text-gray-900 dark:text-white">Edit Post</h2>
-            </div>
-            <EditPostForm
-              post={post}
-              onClose={() => setIsEditing(false)}
-              onSuccess={() => {
-                setIsEditing(false);
-                router.refresh();
-              }}
-            />
-          </div>
-        </div>
-      )}
+      <PostFormModal
+        isOpen={isEditing}
+        onClose={() => setIsEditing(false)}
+        post={post}
+        title="Edit Post"
+        onSuccess={() => {
+          setIsEditing(false);
+          router.refresh();
+        }}
+      />
     </div>
   );
 }

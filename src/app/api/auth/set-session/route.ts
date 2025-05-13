@@ -14,7 +14,10 @@ export async function POST(request: NextRequest) {
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   // Set auth cookie
-  const { data: { session: newSession }, error } = await supabase.auth.setSession(session);
+  const {
+    data: { session: newSession },
+    error,
+  } = await supabase.auth.setSession(session);
 
   if (error) {
     console.error('Error setting session:', error);

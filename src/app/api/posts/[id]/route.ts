@@ -6,10 +6,7 @@ import { cookies } from 'next/headers';
 import { getServerSession } from '@/lib/server-auth';
 import { deleteImageFromDreamObjects } from '@/lib/dreamobjects';
 
-export async function PUT(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
   const { id } = context.params;
   const sessionData = await getServerSession();
 
@@ -36,7 +33,7 @@ export async function PUT(
         title,
         description,
         date,
-        notes
+        notes,
       })
       .eq('id', id)
       .select()
@@ -50,19 +47,17 @@ export async function PUT(
     // Handle tag updates (existing logic)
     if (tags) {
       // Delete existing post-tag relationships
-      const { error: deleteTagError } = await supabase
-        .from('post_tags')
-        .delete()
-        .eq('post_id', id);
+      const { error: deleteTagError } = await supabase.from('post_tags').delete().eq('post_id', id);
       if (deleteTagError) {
         console.error('Error deleting post-tag relationships:', deleteTagError);
         return NextResponse.json({ error: deleteTagError.message }, { status: 500 });
       }
       if (tags.length > 0) {
         // Ensure all tags exist
-        const { error: tagError } = await supabase
-          .from('tags')
-          .upsert(tags.map((name: string) => ({ name })), { onConflict: 'name' });
+        const { error: tagError } = await supabase.from('tags').upsert(
+          tags.map((name: string) => ({ name })),
+          { onConflict: 'name' }
+        );
 
         if (tagError) {
           console.error('Error upserting tags:', tagError);
@@ -77,18 +72,19 @@ export async function PUT(
 
         if (tagSelectError || !tagData) {
           console.error('Error selecting tags:', tagSelectError);
-          return NextResponse.json({ error: tagSelectError?.message || 'Failed to select tags' }, { status: 500 });
+          return NextResponse.json(
+            { error: tagSelectError?.message || 'Failed to select tags' },
+            { status: 500 }
+          );
         }
 
         // Create new post-tag relationships
-        const { error: postTagError } = await supabase
-          .from('post_tags')
-          .insert(
-            tagData.map(tag => ({
-              post_id: id,
-              tag_id: tag.id
-            }))
-          );
+        const { error: postTagError } = await supabase.from('post_tags').insert(
+          tagData.map(tag => ({
+            post_id: id,
+            tag_id: tag.id,
+          }))
+        );
 
         if (postTagError) {
           console.error('Error creating post-tag relationships:', postTagError);
@@ -137,7 +133,7 @@ export async function PUT(
           await deleteImageFromDreamObjects(key);
         } catch (err) {
           console.error('Error deleting from S3 or extracting key:', err);
-        }  // Continue to DB delete
+        } // Continue to DB delete
       }
       // Delete from DB
       const { error: dbDeleteErr } = await supabase
@@ -196,10 +192,7 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
   const { id } = context.params;
   const sessionData = await getServerSession();
 
@@ -217,10 +210,7 @@ export async function DELETE(
 
   try {
     // Delete post-tag relationships first
-    const { error: tagError } = await supabase
-      .from('post_tags')
-      .delete()
-      .eq('post_id', id);
+    const { error: tagError } = await supabase.from('post_tags').delete().eq('post_id', id);
 
     if (tagError) {
       console.error('Error deleting post-tag relationships:', tagError);
@@ -228,10 +218,7 @@ export async function DELETE(
     }
 
     // Then delete the post
-    const { error: postError } = await supabase
-      .from('posts')
-      .delete()
-      .eq('id', id);
+    const { error: postError } = await supabase.from('posts').delete().eq('id', id);
 
     if (postError) {
       console.error('Error deleting post:', postError);

@@ -7,7 +7,9 @@ export async function createClient(useServiceRole: boolean = false) {
   if (useServiceRole) {
     // Use service role key for admin operations
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set. This key is required for admin operations.');
+      throw new Error(
+        'SUPABASE_SERVICE_ROLE_KEY is not set. This key is required for admin operations.'
+      );
     }
     return createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,8 +17,8 @@ export async function createClient(useServiceRole: boolean = false) {
       {
         auth: {
           autoRefreshToken: false,
-          persistSession: false
-        }
+          persistSession: false,
+        },
       }
     );
   }

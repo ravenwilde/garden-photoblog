@@ -12,6 +12,14 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
+## [1.4.1] - 2025-05-13
+
+### Bug Fixes
+- Reverted API standardization changes to fix failing tests
+- Restored original response formats in API routes
+- Removed api-utils.ts utility that was causing compatibility issues
+- Fixed API route response handling in test utilities
+
 ## [1.4.0] - 2025-05-06
 
 ### Features

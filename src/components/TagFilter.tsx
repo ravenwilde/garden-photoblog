@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 import type { Tag } from '@/lib/tags';
 import FilterModal from './FilterModal';
+import TagList from './TagList';
 
 interface TagFilterProps {
   tags: Tag[];
@@ -54,69 +54,14 @@ export default function TagFilter({ tags, className = '' }: TagFilterProps) {
     }
   };
 
-  // Get tag item class based on whether it's selected
-  const getTagItemClass = (isSelected: boolean) => {
-    return `px-3 py-1.5 rounded-full text-sm transition-colors ${
-      isSelected
-        ? 'bg-emerald-500 text-white'
-        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
-    }`;
-  };
-
-  // Render tag content (label and count)
-  const renderTagContent = (tagName: string, count?: number) => (
-    <>
-      {tagName}
-      {count !== undefined && <span className="ml-1 text-xs opacity-70">({count})</span>}
-    </>
-  );
-
   // Render tag list for desktop view (using regular Links)
   const renderDesktopTagList = () => (
-    <div className="flex flex-wrap gap-2">
-      <Link
-        href={pathname}
-        className={getTagItemClass(!currentTag)}
-        aria-current={!currentTag ? 'page' : undefined}
-      >
-        All
-      </Link>
-
-      {tags.map(tag => (
-        <Link
-          key={tag.id}
-          href={`${pathname}?tag=${encodeURIComponent(tag.name)}`}
-          className={getTagItemClass(currentTag === tag.name)}
-          aria-current={currentTag === tag.name ? 'page' : undefined}
-        >
-          {renderTagContent(tag.name, tag.post_count)}
-        </Link>
-      ))}
-    </div>
+    <TagList tags={tags} currentTag={currentTag} linkTags={true} showCount={true} />
   );
 
   // Render tag list for modal view (using buttons that close the modal)
   const renderModalTagList = () => (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleTagSelect()}
-        className={getTagItemClass(!currentTag)}
-        aria-current={!currentTag ? 'page' : undefined}
-      >
-        All
-      </button>
-
-      {tags.map(tag => (
-        <button
-          key={tag.id}
-          onClick={() => handleTagSelect(tag.name)}
-          className={getTagItemClass(currentTag === tag.name)}
-          aria-current={currentTag === tag.name ? 'page' : undefined}
-        >
-          {renderTagContent(tag.name, tag.post_count)}
-        </button>
-      ))}
-    </div>
+    <TagList tags={tags} currentTag={currentTag} onTagSelect={handleTagSelect} showCount={true} />
   );
 
   return (

@@ -48,12 +48,12 @@ export function createMockRequest(options: {
   Object.entries(cookies).forEach(([key, value]) => {
     cookieObj[key] = value;
   });
-  
+
   // Add cookies to the request
   Object.defineProperty(request, 'cookies', {
     get: jest.fn().mockReturnValue({
       getAll: () => Object.entries(cookieObj).map(([name, value]) => ({ name, value })),
-      get: (name: string) => cookieObj[name] ? { name, value: cookieObj[name] } : undefined,
+      get: (name: string) => (cookieObj[name] ? { name, value: cookieObj[name] } : undefined),
       has: (name: string) => !!cookieObj[name],
     }),
   });
@@ -73,7 +73,7 @@ export async function parseResponse(response: NextResponse): Promise<{
 }> {
   const status = response.status;
   const headers = response.headers;
-  
+
   // Parse the response body
   let data;
   try {
@@ -95,11 +95,7 @@ export async function parseResponse(response: NextResponse): Promise<{
  * @param user Optional user object to include in the session
  * @returns A mock session object or null
  */
-export function mockSession(user?: {
-  id: string;
-  email: string;
-  role?: string;
-}) {
+export function mockSession(user?: { id: string; email: string; role?: string }) {
   if (!user) {
     return null;
   }
