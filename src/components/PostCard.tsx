@@ -148,7 +148,10 @@ export default function PostCard({ post }: PostCardProps) {
         onClose={() => setIsEditing(false)}
         post={post}
         title="Edit Post"
-        onSuccess={() => router.refresh()}
+        onSuccess={() => {
+          setIsEditing(false);
+          router.refresh();
+        }}
       />
     </div>
   );

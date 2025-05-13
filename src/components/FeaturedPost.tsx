@@ -155,7 +155,10 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
         isOpen={isEditing}
         onClose={() => setIsEditing(false)}
         post={post}
-        onSuccess={() => router.refresh()}
+        onSuccess={() => {
+          setIsEditing(false);
+          router.refresh();
+        }}
       />
     </div>
   );
