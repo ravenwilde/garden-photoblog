@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { deletePostAction } from '@/app/actions';
 import ImageModal from './ImageModal';
-import EditPostForm from './EditPostForm';
+import PostFormModal from './PostFormModal';
 
 interface FeaturedPostProps {
   post: Post;
@@ -151,23 +151,12 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
         </div>
       </div>
       <ImageModal images={post.images} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      {isEditing && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full">
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Edit Post</h2>
-              <EditPostForm
-                post={post}
-                onClose={() => setIsEditing(false)}
-                onSuccess={() => {
-                  setIsEditing(false);
-                  router.refresh();
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <PostFormModal
+        isOpen={isEditing}
+        onClose={() => setIsEditing(false)}
+        post={post}
+        onSuccess={() => router.refresh()}
+      />
     </div>
   );
 }

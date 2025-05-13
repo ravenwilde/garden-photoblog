@@ -1,15 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import { useTheme } from 'next-themes';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
+import PostFormModal from './PostFormModal';
+import { getCsrfToken } from '@/lib/csrf-client';
 
 export default function Navbar() {
   const { isAdmin, signOut, loading } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -40,12 +45,12 @@ export default function Navbar() {
                 >
                   Tags
                 </Link>
-                <Link
-                  href="/new"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                <button
+                  onClick={() => setIsNewPostModalOpen(true)}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors"
                 >
                   New Post
-                </Link>
+                </button>
               </div>
             )}
 
@@ -55,13 +60,12 @@ export default function Navbar() {
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Toggle theme"
               >
-                {mounted && (
-                  theme === 'dark' ? (
+                {mounted &&
+                  (theme === 'dark' ? (
                     <SunIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                   ) : (
                     <MoonIcon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                  )
-                )}
+                  ))}
               </button>
               <button
                 onClick={async () => {
@@ -79,6 +83,42 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Post form modal */}
+      <PostFormModal
+        isOpen={isNewPostModalOpen}
+        onClose={() => setIsNewPostModalOpen(false)}
+        title="Create New Post"
+        onSuccess={async post => {
+          if (post) {
+            try {
+              const token = await getCsrfToken();
+              const response = await fetch('/api/posts', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-csrf-token': token,
+                },
+                body: JSON.stringify(post),
+              });
+
+              if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to create post');
+              }
+
+              // Refresh the page cache
+              router.refresh();
+
+              // Close the modal
+              setIsNewPostModalOpen(false);
+            } catch (error) {
+              console.error('Failed to create post:', error);
+              alert('Failed to create post. Please try again.');
+            }
+          }
+        }}
+      />
     </nav>
   );
 }
