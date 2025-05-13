@@ -4,18 +4,14 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
-  // Add headers to help with test identification
-  const headers = new Headers();
-  headers.set('x-request-path', '/auth/set-session');
-
   const { session } = await request.json();
 
   if (!session) {
-    return NextResponse.json({ error: 'No session provided' }, { status: 400, headers });
+    return NextResponse.json({ error: 'No session provided' }, { status: 400 });
   }
 
-  // For Next.js 15, we need to use the correct approach with cookies
-  const supabase = createRouteHandlerClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   // Set auth cookie
   const {
@@ -25,8 +21,8 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     console.error('Error setting session:', error);
-    return NextResponse.json({ error: 'Invalid session' }, { status: 500, headers });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ session: newSession }, { headers });
+  return NextResponse.json({ session: newSession });
 }

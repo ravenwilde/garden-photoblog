@@ -127,7 +127,7 @@ describe('API: /api/tags', () => {
 
       // Verify the response
       expect(status).toBe(500);
-      expect(data).toEqual({ error: 'Internal Server Error' });
+      expect(data).toEqual({ error: 'Failed to get tags' });
     });
   });
 
@@ -333,7 +333,7 @@ describe('API: /api/tags', () => {
 
       // Verify the response
       expect(status).toBe(500);
-      expect(data).toEqual({ error: 'Internal Server Error' });
+      expect(data).toEqual({ error: errorMessage });
     });
   });
 });

@@ -5,13 +5,7 @@ import * as supabaseSSR from '@supabase/ssr';
 
 // Mock the necessary dependencies
 jest.mock('next/headers', () => ({
-  // In Next.js 15, cookies() returns a Promise
-  cookies: jest.fn().mockImplementation(() =>
-    Promise.resolve({
-      get: jest.fn(name => ({ value: `cookie-${name}` })),
-      set: jest.fn(),
-    })
-  ),
+  cookies: jest.fn(),
 }));
 
 jest.mock('@supabase/ssr', () => ({

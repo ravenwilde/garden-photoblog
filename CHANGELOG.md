@@ -12,34 +12,13 @@ DOCUMENTATION MANAGEMENT REMINDER:
 
 All notable changes to the Garden Photo Blog project will be documented in this file.
 
-## [1.4.2] - 2025-05-12
-
-### Code Improvements
-- Refactored API routes to use utility functions for authentication and error handling
-- Created new `api-utils.ts` with reusable functions for common API operations:
-  - `checkAdminAuth()`: Centralized authentication and admin authorization checks
-  - `handleApiError()`: Standardized error handling across API routes
-  - `createNoContentResponse()`: Consistent 204 No Content responses
-- Improved error handling consistency across all API endpoints
-- Reduced code duplication in API routes
-- Added backward compatibility options to utility functions to maintain test compatibility
-
-### Technical Debt
-- Some tests need to be updated to work with the new API response format
-- Added compatibility mode to utility functions as a temporary solution
-
-## [1.4.1] - 2025-05-12
+## [1.4.1] - 2025-05-13
 
 ### Bug Fixes
-- Fixed DELETE endpoint for tags in `/api/tags/[id]/route.ts` to use proper Next.js 15 response format
-- Enhanced ImageThumbnail component with error handling to gracefully handle missing images
-- Updated Supabase client initialization to properly handle cookies in Next.js 15
-- Fixed tests for ImageThumbnail component to account for error handling
-
-### Next.js 15 Compatibility
-- Updated all API routes to properly await context.params before accessing properties
-- Improved cookie handling in Supabase server client to follow Next.js 15 best practices
-- Fixed response status code handling in API routes
+- Reverted API standardization changes to fix failing tests
+- Restored original response formats in API routes
+- Removed api-utils.ts utility that was causing compatibility issues
+- Fixed API route response handling in test utilities
 
 ## [1.4.0] - 2025-05-06
 

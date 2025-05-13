@@ -81,7 +81,7 @@ describe('API: /api/posts', () => {
 
       // Verify the response
       expect(status).toBe(500);
-      expect(data).toEqual({ error: 'Internal Server Error' });
+      expect(data).toEqual({ error: 'Failed to get posts' });
     });
   });
 
@@ -277,7 +277,7 @@ describe('API: /api/posts', () => {
 
       // Verify the response
       expect(status).toBe(500);
-      expect(data).toEqual({ error: 'Internal Server Error' });
+      expect(data).toEqual({ error: 'Failed to create post' });
     });
   });
 
@@ -318,7 +318,7 @@ describe('API: /api/posts', () => {
 
       // Verify the response
       expect(status).toBe(200);
-      expect(data).toEqual({ success: true });
+      expect(data).toEqual(updatedPost);
       expect(postsLib.updatePost).toHaveBeenCalledWith('1', {
         title: 'Updated Post',
         description: 'Updated Description',
@@ -372,7 +372,7 @@ describe('API: /api/posts', () => {
 
       // Verify the response
       expect(status).toBe(500);
-      expect(data).toEqual({ error: 'Internal Server Error' });
+      expect(data).toEqual({ error: 'Failed to update post' });
     });
   });
 
@@ -393,8 +393,8 @@ describe('API: /api/posts', () => {
       const { status, data } = await parseResponse(response);
 
       // Verify the response
-      expect(status).toBe(204);
-      expect(data).toEqual(null);
+      expect(status).toBe(200);
+      expect(data).toEqual({ success: true });
       expect(postsLib.deletePost).toHaveBeenCalledWith('1');
     });
 
@@ -433,7 +433,7 @@ describe('API: /api/posts', () => {
 
       // Verify the response
       expect(status).toBe(500);
-      expect(data).toEqual({ error: 'Internal Server Error' });
+      expect(data).toEqual({ error: 'Failed to delete post' });
     });
   });
 });

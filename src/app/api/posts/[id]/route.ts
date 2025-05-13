@@ -1,33 +1,26 @@
 import { NextResponse } from 'next/server';
 import type { Image } from '@/types';
 import type { NextRequest } from 'next/server';
-import { deleteImageFromDreamObjects } from '@/lib/dreamobjects';
-import { createClient } from '@/lib/supabase/server';
-import { createNoContentResponse, handleApiError } from '@/lib/api-utils';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { getServerSession } from '@/lib/server-auth';
+import { deleteImageFromDreamObjects } from '@/lib/dreamobjects';
 
-export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
-  // In Next.js 15, we need to await params before accessing its properties
-  const { id } = await context.params;
-
-  // Add headers to help with test identification
-  const headers = new Headers();
-  headers.set('x-request-path', `/posts/${id}`);
-
-  // Check if the user is authenticated and is an admin
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const sessionData = await getServerSession();
 
   if (!sessionData || !sessionData.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401, headers });
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
   if (sessionData.user.email !== adminEmail) {
-    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401, headers });
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
-  // For Next.js 15, we need to use the correct approach with cookies
-  const supabase = await createClient();
+  const cookieStore = cookies();
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   try {
     const body = await request.json();
@@ -48,216 +41,193 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
 
     if (postError) {
       console.error('Error updating post:', postError);
-      return NextResponse.json({ error: 'Database error' }, { status: 500, headers });
+      return NextResponse.json({ error: postError.message }, { status: 500 });
     }
 
     // Handle tag updates (existing logic)
     if (tags) {
-      // First delete existing tags for this post
-      const { error: deleteTagsError } = await supabase
-        .from('post_tags')
-        .delete()
-        .eq('post_id', id);
-
-      if (deleteTagsError) {
-        return handleApiError(deleteTagsError, 'Error deleting existing tags:');
+      // Delete existing post-tag relationships
+      const { error: deleteTagError } = await supabase.from('post_tags').delete().eq('post_id', id);
+      if (deleteTagError) {
+        console.error('Error deleting post-tag relationships:', deleteTagError);
+        return NextResponse.json({ error: deleteTagError.message }, { status: 500 });
       }
+      if (tags.length > 0) {
+        // Ensure all tags exist
+        const { error: tagError } = await supabase.from('tags').upsert(
+          tags.map((name: string) => ({ name })),
+          { onConflict: 'name' }
+        );
 
-      // Get or create tags and link them to the post
-      for (const tagName of tags) {
-        // Check if tag exists
-        const { data: existingTag, error: tagError } = await supabase
+        if (tagError) {
+          console.error('Error upserting tags:', tagError);
+          return NextResponse.json({ error: tagError.message }, { status: 500 });
+        }
+
+        // Get the tag IDs
+        const { data: tagData, error: tagSelectError } = await supabase
           .from('tags')
-          .select('id')
-          .eq('name', tagName.toLowerCase())
-          .single();
+          .select('id, name')
+          .in('name', tags);
 
-        if (tagError && tagError.code !== 'PGRST116') {
-          // PGRST116 = not found
-          return handleApiError(tagError, 'Error checking tag existence:');
+        if (tagSelectError || !tagData) {
+          console.error('Error selecting tags:', tagSelectError);
+          return NextResponse.json(
+            { error: tagSelectError?.message || 'Failed to select tags' },
+            { status: 500 }
+          );
         }
 
-        let tagId;
-        if (existingTag) {
-          tagId = existingTag.id;
-        } else {
-          // Create new tag
-          const { data: newTag, error: createTagError } = await supabase
-            .from('tags')
-            .insert({ name: tagName.toLowerCase() })
-            .select('id')
-            .single();
+        // Create new post-tag relationships
+        const { error: postTagError } = await supabase.from('post_tags').insert(
+          tagData.map(tag => ({
+            post_id: id,
+            tag_id: tag.id,
+          }))
+        );
 
-          if (createTagError) {
-            return handleApiError(createTagError, 'Error creating tag:');
-          }
-
-          tagId = newTag.id;
-        }
-
-        // Link tag to post
-        const { error: linkTagError } = await supabase
-          .from('post_tags')
-          .insert({ post_id: id, tag_id: tagId });
-
-        if (linkTagError) {
-          return handleApiError(linkTagError, 'Error linking tag to post:');
+        if (postTagError) {
+          console.error('Error creating post-tag relationships:', postTagError);
+          return NextResponse.json({ error: postTagError.message }, { status: 500 });
         }
       }
     }
 
-    // Handle image removals
-    if (imagesToRemove && imagesToRemove.length > 0) {
-      // Get image details before deletion for S3 cleanup
-      const { data: imagesToDelete, error: getImagesError } = await supabase
+    // --- IMAGE MANAGEMENT ---
+    // Remove images
+    if (Array.isArray(imagesToRemove) && imagesToRemove.length > 0) {
+      // Get image rows to find S3 keys
+      const { data: imagesForDelete, error: fetchImgErr } = await supabase
         .from('images')
-        .select('*')
+        .select('id, url')
         .in('id', imagesToRemove);
-
-      if (getImagesError) {
-        return handleApiError(getImagesError, 'Error getting images to delete:');
+      if (fetchImgErr) {
+        console.error('Error fetching images to delete:', fetchImgErr);
+        return NextResponse.json({ error: fetchImgErr.message }, { status: 500 });
+      }
+      // Delete from S3 and DB
+      // Helper to extract S3 key from URL
+      function extractS3KeyFromUrl(url: string): string {
+        try {
+          const parsed = new URL(url);
+          // Find the path after the bucket name (e.g., /images/12345-filename.jpg)
+          // Assumes the key is everything after the last '/' before the filename
+          // e.g., https://bucketname.region.digitaloceanspaces.com/images/12345-filename.jpg
+          // returns 'images/12345-filename.jpg'
+          const path = parsed.pathname;
+          // Remove leading slash if present
+          return path.startsWith('/') ? path.slice(1) : path;
+        } catch {
+          // If not a valid URL, fallback to legacy extraction
+          const urlParts = url.split('/');
+          if (urlParts.length >= 2) {
+            return urlParts.slice(-2).join('/');
+          }
+          throw new Error('Could not extract S3 key from image URL: ' + url);
+        }
       }
 
-      // Delete images from database
-      const { error: deleteImagesError } = await supabase
+      for (const img of imagesForDelete) {
+        try {
+          const key = extractS3KeyFromUrl(img.url);
+          await deleteImageFromDreamObjects(key);
+        } catch (err) {
+          console.error('Error deleting from S3 or extracting key:', err);
+        } // Continue to DB delete
+      }
+      // Delete from DB
+      const { error: dbDeleteErr } = await supabase
         .from('images')
         .delete()
         .in('id', imagesToRemove);
-
-      if (deleteImagesError) {
-        return handleApiError(deleteImagesError, 'Error deleting images from database:');
+      if (dbDeleteErr) {
+        console.error('Error deleting images from DB:', dbDeleteErr);
+        return NextResponse.json({ error: dbDeleteErr.message }, { status: 500 });
       }
-
-      // Delete from S3/DreamObjects
-      for (const image of imagesToDelete) {
-        try {
-          // Extract the key from the URL
-          const url = new URL(image.url);
-          const key = url.pathname.substring(1); // Remove leading slash
-          await deleteImageFromDreamObjects(key);
-        } catch (error) {
-          console.error('Error deleting image from S3:', error);
-          // Continue with other deletions even if one fails
+    }
+    // Add new images
+    if (Array.isArray(newImages) && newImages.length > 0) {
+      // Insert each new image (assume already uploaded, just add DB row)
+      const imagesToInsert = newImages.map((img: Image) => {
+        const base = {
+          url: img.url,
+          alt: img.alt || '',
+          width: img.width,
+          height: img.height,
+          post_id: id,
+        };
+        if (img.timestampTaken && typeof img.timestampTaken === 'string') {
+          return { ...base, timestamp_taken: img.timestampTaken };
         }
+        return base; // timestamp_taken omitted if not present
+      });
+      console.log('DEBUG: imagesToInsert payload:', JSON.stringify(imagesToInsert, null, 2));
+      const { error: insertImgErr } = await supabase.from('images').insert(imagesToInsert);
+      if (insertImgErr) {
+        console.error('Error inserting new images:', insertImgErr);
+        return NextResponse.json({ error: insertImgErr.message }, { status: 500 });
       }
     }
 
-    // Handle new images
-    if (newImages && newImages.length > 0) {
-      // Prepare image data for insertion
-      const imagesToInsert = newImages.map((img: Image) => ({
-        url: img.url,
-        alt: img.alt || null,
-        width: img.width || null,
-        height: img.height || null,
-        post_id: id,
-      }));
-
-      console.log('DEBUG: imagesToInsert payload:', imagesToInsert);
-
-      // Insert new images
-      const { error: insertImagesError } = await supabase.from('images').insert(imagesToInsert);
-
-      if (insertImagesError) {
-        return handleApiError(insertImagesError, 'Error inserting new images:');
-      }
-    }
-
-    // Get the updated post with all relationships
-    const { data: updatedPost, error: getPostError } = await supabase
+    // Get the updated post with tags and images
+    const { data: finalPost, error: finalError } = await supabase
       .from('posts')
-      .select(
-        `
-        *,
-        images (*),
-        tags:post_tags (
-          tag:tags (*)
-        )
-      `
-      )
+      .select(`*, tags:post_tags(tag:tags(name)), images(*)`)
       .eq('id', id)
       .single();
-
-    if (getPostError) {
-      return handleApiError(getPostError, 'Error getting updated post:');
+    if (finalError) {
+      console.error('Error fetching updated post:', finalError);
+      return NextResponse.json({ error: finalError.message }, { status: 500 });
     }
-
-    // Transform the post for the response
-    const finalPost = updatedPost;
+    // Transform the response to match the Post type
     const transformedPost = {
-      id: finalPost.id,
-      title: finalPost.title,
-      description: finalPost.description,
-      date: finalPost.date,
-      notes: finalPost.notes,
+      ...finalPost,
       tags: finalPost.tags?.map((t: { tag: { name: string } }) => t.tag.name) || [],
       images: finalPost.images || [],
     };
     return NextResponse.json({ success: true, data: transformedPost });
-  } catch (err) {
-    console.error('Error updating post:', err);
-    return NextResponse.json({ error: 'Database error' }, { status: 500, headers });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
-  const { id } = await context.params;
-
-  // Add headers to help with test identification
-  const headers = new Headers();
-  headers.set('x-request-path', `/posts/${id}`);
-
-  // Check if the user is authenticated and is an admin
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const sessionData = await getServerSession();
 
   if (!sessionData || !sessionData.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401, headers });
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
   }
 
   const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
   if (sessionData.user.email !== adminEmail) {
-    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401, headers });
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
   }
 
-  // For Next.js 15, we need to use the correct approach with cookies
-  const supabase = await createClient();
+  const cookieStore = cookies();
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
   try {
-    // Get all images for this post to delete from S3
-    const { data: images, error: getImagesError } = await supabase
-      .from('images')
-      .select('*')
-      .eq('post_id', id);
+    // Delete post-tag relationships first
+    const { error: tagError } = await supabase.from('post_tags').delete().eq('post_id', id);
 
-    if (getImagesError) {
-      return handleApiError(getImagesError, 'Error getting images to delete:');
+    if (tagError) {
+      console.error('Error deleting post-tag relationships:', tagError);
+      return NextResponse.json({ error: tagError.message }, { status: 500 });
     }
 
-    // Delete post (cascade will delete images and post_tags)
-    const { error: deletePostError } = await supabase.from('posts').delete().eq('id', id);
+    // Then delete the post
+    const { error: postError } = await supabase.from('posts').delete().eq('id', id);
 
-    if (deletePostError) {
-      return handleApiError(deletePostError, 'Error deleting post:');
+    if (postError) {
+      console.error('Error deleting post:', postError);
+      return NextResponse.json({ error: postError.message }, { status: 500 });
     }
 
-    // Delete images from S3/DreamObjects
-    if (images && images.length > 0) {
-      for (const image of images) {
-        try {
-          // Extract the key from the URL
-          const url = new URL(image.url);
-          const key = url.pathname.substring(1); // Remove leading slash
-          await deleteImageFromDreamObjects(key);
-        } catch (error) {
-          console.error('Error deleting image from S3:', error);
-          // Continue with other deletions even if one fails
-        }
-      }
-    }
-
-    return createNoContentResponse();
-  } catch (err) {
-    console.error('Error deleting post:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers });
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
