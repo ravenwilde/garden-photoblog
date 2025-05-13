@@ -10,14 +10,12 @@ export async function GET() {
     return NextResponse.json(posts);
   } catch (error) {
     console.error('Failed to get posts:', error);
-    return NextResponse.json(
-      { error: 'Failed to get posts' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
+  // Check admin authentication
   const sessionData = await getServerSession();
 
   if (!sessionData || !sessionData.user?.email) {
@@ -31,66 +29,74 @@ export async function POST(request: NextRequest) {
 
   try {
     const post: NewPost = await request.json();
-    
+
     // Validate required fields
     if (!post.title || !post.description || !post.date || !post.images?.length) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const newPost = await createPost(post);
     return NextResponse.json(newPost, { status: 201 });
   } catch (error) {
     console.error('Failed to create post:', error);
-    return NextResponse.json(
-      { error: 'Failed to create post' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
+  // Check admin authentication
+  const sessionData = await getServerSession();
+
+  if (!sessionData || !sessionData.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+  }
+
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  if (sessionData.user.email !== adminEmail) {
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
+  }
+
   try {
     const { id } = await request.json();
-    
+
+    // Validate required fields
     if (!id) {
-      return NextResponse.json(
-        { error: 'Post ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
     }
 
     await deletePost(id);
-    return NextResponse.json({ success: true });
+    return new Response(null, { status: 204 });
   } catch (error) {
     console.error('Failed to delete post:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete post' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
+  // Check admin authentication
+  const sessionData = await getServerSession();
+
+  if (!sessionData || !sessionData.user?.email) {
+    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
+  }
+
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+  if (sessionData.user.email !== adminEmail) {
+    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
+  }
+
   try {
     const { id, ...updates }: { id: string } & Partial<Post> = await request.json();
-    
+
+    // Validate required fields
     if (!id) {
-      return NextResponse.json(
-        { error: 'Post ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
     }
 
-    const updatedPost = await updatePost(id, updates);
-    return NextResponse.json(updatedPost);
+    await updatePost(id, updates);
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Failed to update post:', error);
-    return NextResponse.json(
-      { error: 'Failed to update post' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

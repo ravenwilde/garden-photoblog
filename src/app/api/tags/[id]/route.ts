@@ -1,22 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { deleteTag, updateTag } from '@/lib/tags';
-import { getServerSession } from '@/lib/server-auth';
+import { checkAdminAuth, createNoContentResponse, handleApiError } from '@/lib/api-utils';
 
-export async function PUT(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
-  const sessionData = await getServerSession();
-
-  if (!sessionData || !sessionData.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
-  }
-
-  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (sessionData.user.email !== adminEmail) {
-    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
-  }
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+  // Check if the user is authenticated and is an admin
+  const authError = await checkAdminAuth(true);
+  if (authError) return authError;
 
   try {
     const { name } = await request.json();
@@ -28,36 +18,27 @@ export async function PUT(
     const updatedTag = await updateTag(id, name);
     return NextResponse.json(updatedTag);
   } catch (error) {
-    if (error instanceof Error && error.message === 'A tag with this name already exists') {
-      return NextResponse.json({ error: error.message }, { status: 409 });
-    }
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return handleApiError(error, 'Error updating tag:', true, 'Database error');
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
-  const sessionData = await getServerSession();
 
-  if (!sessionData || !sessionData.user?.email) {
-    return NextResponse.json({ error: 'Unauthorized - No session' }, { status: 401 });
-  }
-
-  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-  if (sessionData.user.email !== adminEmail) {
-    return NextResponse.json({ error: 'Unauthorized - Not admin' }, { status: 401 });
-  }
+  // Check if the user is authenticated and is an admin
+  const authError = await checkAdminAuth(true);
+  if (authError) return authError;
 
   try {
     await deleteTag(id);
-    return NextResponse.json(null, { status: 204 });
+    return createNoContentResponse();
   } catch (error) {
     if (error instanceof Error && error.message === 'Cannot delete tag that is still in use') {
-      return NextResponse.json({ error: error.message }, { status: 409 });
+      return NextResponse.json(
+        { error: 'Cannot delete tag that is still in use' },
+        { status: 409 }
+      );
     }
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return handleApiError(error, 'Error deleting tag:', true, 'Database error');
   }
 }

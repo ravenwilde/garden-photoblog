@@ -1,13 +1,15 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { CookieOptions } from '@supabase/ssr';
+import { type CookieOptions } from '@supabase/ssr';
 
 export async function createClient(useServiceRole: boolean = false) {
   if (useServiceRole) {
     // Use service role key for admin operations
     if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set. This key is required for admin operations.');
+      throw new Error(
+        'SUPABASE_SERVICE_ROLE_KEY is not set. This key is required for admin operations.'
+      );
     }
     return createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,13 +17,14 @@ export async function createClient(useServiceRole: boolean = false) {
       {
         auth: {
           autoRefreshToken: false,
-          persistSession: false
-        }
+          persistSession: false,
+        },
       }
     );
   }
 
   // Use cookie-based auth for normal operations
+  // In Next.js 15, we need to await cookies() before using it
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -29,17 +32,14 @@ export async function createClient(useServiceRole: boolean = false) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        async get(name: string) {
-          const cookie = cookieStore.get(name);
-          return cookie?.value;
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-        async set(name: string, value: string, options: CookieOptions) {
-          const cookieOptions = { name, value, ...options };
-          cookieStore.set(cookieOptions);
+        set(name: string, value: string, options: CookieOptions) {
+          cookieStore.set({ name, value, ...options });
         },
-        async remove(name: string, options: CookieOptions) {
-          const cookieOptions = { name, value: '', ...options };
-          cookieStore.set(cookieOptions);
+        remove(name: string, options: CookieOptions) {
+          cookieStore.set({ name, value: '', ...options, maxAge: 0 });
         },
       },
     }
